@@ -1,0 +1,272 @@
+<p>Task</p>
+<p>You are Graf von Data, an assistant designed to formulate a query based on input from User.</p>
+<p>Process</p>
+<p>You interact with a knowledge graph in a strict think-act-observe cycle.</p>
+<ol>
+<li>Think: Analyse the question from User and the descriptions in the representations gathered so far.</li>
+<li>Act: Choose available actions (listed below) that will best progress towards formulating the query.</li>
+<li>Observe: HALT. System will provide the result of your chosen actions in the next cycle.</li>
+</ol>
+<p>In your response, start with a <code>Think:</code> section followed by an <code>Act:</code> section.</p>
+<p>Actions</p>
+<p>You can issue one or multiple of the following actions.</p>
+<ul>
+<li><code>search(keywords: string)</code>: Get URIs to resources matching the given <code>keywords</code>. Look for URIs that identify entities, i.e., make two calls: <code>search('foo')</code> and <code>search('bar')</code> instead of <code>search('foo bar')</code>.</li>
+<li><code>deref(resource URI: string)</code>: Get all triples with <code>resource URI</code> in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with <code>deref()</code>.</li>
+<li><code>query(sparql: string)</code>: Evaluate <code>sparql</code> and get solutions. Consider using path expressions, i.e., <code>*</code> or <code>+</code> for paths of transitive properties and <code>|</code> for alternative paths.</li>
+</ul>
+<p>You issue run actions concurrently using <code>|</code>, e.g., <code>search('foo') | search('bar')</code>.
+Format action calls as follows: <code>Act: describe('http://foo/bar')</code> or <code>Act: query('PREFIX : &lt;#&gt; SELECT DISTINCT ?x WHERE { ... }')</code>.
+Use quotes for arguments.</p>
+<p>Chat</p>
+<p>Sometimes User does not seek factual information.</p>
+<ul>
+<li><code>chat(text: string)</code>: Issue a <code>chat()</code> action if User does not seek factual information from the knowledge graph.</li>
+</ul>
+<p>Conditions</p>
+<p>Once you have come up with the final query, check the query via <code>query()</code> and then end.</p>
+<ul>
+<li><code>success(text: string)</code>: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.</li>
+</ul>
+<p>If nearing about ten cycles:</p>
+<ul>
+<li><code>fail(text: string)</code>: You have no other choice than to give up. Optionally report to User the relevant steps you tried.</li>
+</ul>
+<p>Stages</p>
+<ul>
+<li>Identify key resources in the User question and find URIs via <code>Act: search()</code>.</li>
+<li>Next, dereference key resources via <code>Act: deref()</code>.
+Iteratively expand your knowledge about the graph via <code>Act: deref()</code> to gather information required to construct the query.
+Consider obtaining information about classes and properties via <code>Act: deref()</code>, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.</li>
+<li>Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.</li>
+</ul>
+<p>Critical Instructions</p>
+<ul>
+<li>Ensure that all URIs used in the query exist in the knowledge graph.</li>
+<li>Only use URIs that have been previously mentioned or discovered via <code>search()</code> or <code>deref()</code>.</li>
+<li>Never repeat successfully executed actions, the results will be the same.</li>
+</ul>
+<hr />
+<p>System has access to ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'] with 48117 triples. System version v0.2.8-93-gfa87822d is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.</p>
+<hr />
+<p>Total equity of foundry companies</p>
+<hr />
+<p>Think: The user is asking for the total equity of foundry companies. To formulate a query, we need to identify the key resources involved, which are "foundry companies" and "total equity". We can start by searching for URIs that match these keywords.</p>
+<p>Act: search('foundry company') | search('total equity') | search('equity')</p>
+<hr />
+<p>The keyword search for <code>foundry company</code> returned the following ranked list with hits.</p>
+<pre><code>https://welektronik.iis.fraunhofer.de/entity/Q287 **['Foundry', 'Company that produces semiconductors for other companies.']** 0.5892
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this **['Active Business Company']** 0.3881
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ109204.ttl#this **['Comal County']** 0.3032
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ838769.ttl#this **['Fountain Valley']** 0.2941
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this **['Taiwan Semiconductor Manufacturing Company']** 0.2925
+</code></pre>
+<hr />
+<p>The keyword search for <code>total equity</code> returned the following ranked list with hits.</p>
+<pre><code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity **['Observed total equity key figure of an enterprise.', 'total equity']** 0.7325
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1147.ttl#this **['Trinity']** 0.3563
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalAssets **['Observed total assets key figure of an enterprise.', 'total assets']** 0.3099
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalRevenue **['total revenue', 'Observed total revenue key figure of an enterprise.']** 0.3032
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ5285.ttl#this **['Tarlac City']** 0.2965
+</code></pre>
+<hr />
+<p>The keyword search for <code>equity</code> returned the following ranked list with hits.</p>
+<pre><code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity **['Observed total equity key figure of an enterprise.', 'total equity']** 0.4845
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1147.ttl#this **['Trinity']** 0.3536
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ680842.ttl#this **['Yilan City']** 0.3062
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1359251.ttl#this **['Kaili City']** 0.3062
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ494254.ttl#this **['Elk County']** 0.3062
+</code></pre>
+<hr />
+<p>Think: We have identified the key resources involved, which are "foundry companies" and "total equity". We can now dereference these resources to gather more information.</p>
+<p>Act: deref('https://welektronik.iis.fraunhofer.de/entity/Q287') | deref('https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity')</p>
+<hr />
+<p>The description of <code>https://welektronik.iis.fraunhofer.de/entity/Q287</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ104.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ110.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ111.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ113.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ114.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ115.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ117.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1176.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ123.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ127.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ141.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ162.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ164.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ165.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ166.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ196.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ237.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ252.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ37.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ38.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ45.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ46.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ49.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ50.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ51.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ52.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ72.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ77.ttl#this&gt; tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; a tbox:OrganizationType ;
+    rdfs:label "Foundry"@en ;
+    rdfs:comment "Company that produces semiconductors for other companies."@en ;
+    tbox:organizationTypeOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ104.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ110.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ111.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ113.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ114.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ115.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ117.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1176.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ123.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ127.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ141.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ162.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ164.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ165.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ166.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ196.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ237.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ252.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ37.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ38.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ45.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ46.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ49.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ50.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ51.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ52.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ72.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ77.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix qb: &lt;http://purl.org/linked-data/cube#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+tbox:totalEquity a qb:MeasureProperty,
+        owl:DatatypeProperty ;
+    rdfs:label "total equity"@en ;
+    rdfs:comment "Observed total equity key figure of an enterprise."@en ;
+    rdfs:domain qb:Observation ;
+    rdfs:range xsd:decimal .
+</code></pre>
+<hr />
+<p>Think: We have gathered information about the key resources involved, which are "foundry companies" and "total equity". We can now use this information to construct a query to retrieve the total equity of foundry companies.</p>
+<p>Act: query('PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX qb: <a href="http://purl.org/linked-data/cube#">http://purl.org/linked-data/cube#</a> SELECT ?totalEquity WHERE { ?company tbox:organizationType <a href="https://welektronik.iis.fraunhofer.de/entity/Q287">https://welektronik.iis.fraunhofer.de/entity/Q287</a> . ?observation qb:observation ?company . ?observation tbox:totalEquity ?totalEquity . }')</p>
+<hr />
+<p>No results for <code>query('PREFIX tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; PREFIX qb: &lt;http://purl.org/linked-data/cube#&gt; SELECT ?totalEquity WHERE { ?company tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; . ?observation qb:observation ?company . ?observation tbox:totalEquity ?totalEquity . }')</code>.</p>
+<hr />
+<p>Think: The query did not return any results. This could be due to the fact that the property <code>qb:observation</code> is not being used in the graph. We need to modify the query to use the correct properties.</p>
+<p>Act: query('PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT ?totalEquity WHERE { ?company tbox:organizationType <a href="https://welektronik.iis.fraunhofer.de/entity/Q287">https://welektronik.iis.fraunhofer.de/entity/Q287</a> . ?company tbox:totalEquity ?totalEquity . }')</p>
+<hr />
+<p>No results for <code>query('PREFIX tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; SELECT ?totalEquity WHERE { ?company tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; . ?company tbox:totalEquity ?totalEquity . }')</code>.</p>
+<hr />
+<p>Think: The query still did not return any results. This could be due to the fact that the property <code>tbox:totalEquity</code> is not being used directly with the company resources. We need to check the graph again to find the correct properties.</p>
+<p>Act: deref('https://welektronik.iis.fraunhofer.de/entity/Q287') | deref('https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity') | query('PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT ?p ?o WHERE { <a href="https://welektronik.iis.fraunhofer.de/entity/Q287">https://welektronik.iis.fraunhofer.de/entity/Q287</a> ?p ?o . }') | query('PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX qb: <a href="http://purl.org/linked-data/cube#">http://purl.org/linked-data/cube#</a> SELECT ?p ?o WHERE { ?s ?p ?o . FILTER(?p = tbox:totalEquity) . }')</p>
+<hr />
+<p>Do not repeat actions.</p>
+<hr />
+<p>Do not repeat actions.</p>
+<hr />
+<p>The query 'PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT ?p ?o WHERE { <a href="https://welektronik.iis.fraunhofer.de/entity/Q287">https://welektronik.iis.fraunhofer.de/entity/Q287</a> ?p ?o . }' returned the following solution (first 20 results).
+    p,o
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ104.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ110.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ111.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ113.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ114.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ115.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ117.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1176.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ123.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ127.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ141.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ162.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ164.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ165.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ166.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ196.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ237.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ252.ttl#this
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ37.ttl#this</p>
+<hr />
+<p>The query 'PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX qb: <a href="http://purl.org/linked-data/cube#">http://purl.org/linked-data/cube#</a> SELECT ?p ?o WHERE { ?s ?p ?o . FILTER(?p = tbox:totalEquity) . }' returned the following solution (first 20 results).
+    p,o
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,354749604000000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,81038000000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,131000000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,428580000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,7800600000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,155700000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,125000000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,663110000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,396500000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,495390000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,462720000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,7471000000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,2827000000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,65339000000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,8033132000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,135400000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,465400000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,154600000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,5837000000.0
+    https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#totalEquity,90488000000.0</p>
+<hr />
+<p>Think: We have found the total equity of various companies, but we still need to filter the results to only include foundry companies.</p>
+<p>Act: query('PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX qb: <a href="http://purl.org/linked-data/cube#">http://purl.org/linked-data/cube#</a> SELECT ?totalEquity WHERE { ?company tbox:organizationType <a href="https://welektronik.iis.fraunhofer.de/entity/Q287">https://welektronik.iis.fraunhofer.de/entity/Q287</a> . ?company tbox:totalEquity ?totalEquity . }')</p>
+<hr />
+<p>No results for <code>query('PREFIX tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; PREFIX qb: &lt;http://purl.org/linked-data/cube#&gt; SELECT ?totalEquity WHERE { ?company tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; . ?company tbox:totalEquity ?totalEquity . }')</code>.</p>
+<hr />
+<p>Think: The query did not return any results. This could be due to the fact that the property <code>tbox:totalEquity</code> is not being used directly with the company resources. We need to check the graph again to find the correct properties.</p>
+<p>Act: query('PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT ?company ?totalEquity WHERE { ?company tbox:organizationType <a href="https://welektronik.iis.fraunhofer.de/entity/Q287">https://welektronik.iis.fraunhofer.de/entity/Q287</a> . ?observation tbox:totalEquity ?totalEquity . FILTER (?company = ?observation) . }')</p>
+<hr />
+<p>No results for <code>query('PREFIX tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; SELECT ?company ?totalEquity WHERE { ?company tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; . ?observation tbox:totalEquity ?totalEquity . FILTER (?company = ?observation) . }')</code>.</p>
+<hr />
+<p>Think: The query did not return any results. This could be due to the fact that the filter condition <code>?company = ?observation</code> is not met. We need to check the graph again to find the correct relationships between companies and observations.</p>
+<p>Act: fail('Unable to find the total equity of foundry companies. The query did not return any results.')</p>
+<p>{'loop': {'id': '67d29d7a', 'question': 'Total equity of foundry companies', 'iterations': 8, 'state': <State.FAIL: 'FAIL'>, 'sparql': 'PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT ?company ?totalEquity WHERE { ?company tbox:organizationType <a href="https://welektronik.iis.fraunhofer.de/entity/Q287">https://welektronik.iis.fraunhofer.de/entity/Q287</a> . ?observation tbox:totalEquity ?totalEquity . FILTER (?company = ?observation) . }', 'elapsed_time': 141305}, 'tokens': {'prompt_tokens': 46121, 'completion_tokens': 1114, 'elapsed_time_model': 124584, 'tokens_per_sec': 379.1411435681216}, 'git': {'label': 'v0.2.8-93-gfa87822d', 'commit': 'fa87822d9e4dc7607312373ccc8fbd8675364b05'}, 'sources': ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}</p>

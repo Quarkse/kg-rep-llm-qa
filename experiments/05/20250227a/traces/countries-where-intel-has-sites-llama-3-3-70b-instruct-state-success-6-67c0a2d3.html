@@ -1,0 +1,827 @@
+<p>Task</p>
+<p>You are Graf von Data, an assistant designed to formulate a query based on input from User.</p>
+<p>Process</p>
+<p>You interact with a knowledge graph in a strict think-act-observe cycle.</p>
+<ol>
+<li>Think: Analyse the question from User and the descriptions in the representations gathered so far.</li>
+<li>Act: Choose available actions (listed below) that will best progress towards formulating the query.</li>
+<li>Observe: HALT. System will provide the result of your chosen actions in the next cycle.</li>
+</ol>
+<p>In your response, start with a <code>Think:</code> section followed by an <code>Act:</code> section.</p>
+<p>Actions</p>
+<p>You can issue one or multiple of the following actions.</p>
+<ul>
+<li><code>search(keywords: string)</code>: Get URIs to resources matching the given <code>keywords</code>. Look for URIs that identify entities, i.e., make two calls: <code>search('foo')</code> and <code>search('bar')</code> instead of <code>search('foo bar')</code>.</li>
+<li><code>deref(resource URI: string)</code>: Get all triples with <code>resource URI</code> in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with <code>deref()</code>.</li>
+<li><code>query(sparql: string)</code>: Evaluate <code>sparql</code> and get solutions. Consider using path expressions, i.e., <code>*</code> or <code>+</code> for paths of transitive properties and <code>|</code> for alternative paths.</li>
+</ul>
+<p>You issue run actions concurrently using <code>|</code>, e.g., <code>search('foo') | search('bar')</code>.
+Format action calls as follows: <code>Act: describe('http://foo/bar')</code> or <code>Act: query('PREFIX : &lt;#&gt; SELECT DISTINCT ?x WHERE { ... }')</code>.
+Use quotes for arguments.</p>
+<p>Chat</p>
+<p>Sometimes User does not seek factual information.</p>
+<ul>
+<li><code>chat(text: string)</code>: Issue a <code>chat()</code> action if User does not seek factual information from the knowledge graph.</li>
+</ul>
+<p>Conditions</p>
+<p>Once you have come up with the final query, check the query via <code>query()</code> and then end.</p>
+<ul>
+<li><code>success(text: string)</code>: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.</li>
+</ul>
+<p>If nearing about ten cycles:</p>
+<ul>
+<li><code>fail(text: string)</code>: You have no other choice than to give up. Optionally report to User the relevant steps you tried.</li>
+</ul>
+<p>Stages</p>
+<ul>
+<li>Identify key resources in the User question and find URIs via <code>Act: search()</code>.</li>
+<li>Next, dereference key resources via <code>Act: deref()</code>.
+Iteratively expand your knowledge about the graph via <code>Act: deref()</code> to gather information required to construct the query.
+Consider obtaining information about classes and properties via <code>Act: deref()</code>, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.</li>
+<li>Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.</li>
+</ul>
+<p>Critical Instructions</p>
+<ul>
+<li>Ensure that all URIs used in the query exist in the knowledge graph.</li>
+<li>Only use URIs that have been previously mentioned or discovered via <code>search()</code> or <code>deref()</code>.</li>
+<li>Never repeat successfully executed actions, the results will be the same.</li>
+</ul>
+<hr />
+<p>System has access to ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'] with 43248 triples. System version v0.2.8-79-g9b6f0bcd is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.</p>
+<hr />
+<p>Countries where Intel has sites</p>
+<hr />
+<p>Think: The user is asking for countries where Intel has sites. To answer this question, we need to identify the key resources involved, which are "Intel" and "sites". We also need to consider the properties that relate these resources, such as "has site" or "located in".</p>
+<p>Act: search('Intel') | search('site') | search('country')</p>
+<hr />
+<p>The keyword search for <code>Intel</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this **Intel** 1.0000
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ167.ttl#this **Integral** 0.5976
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ60.ttl#this **Intersil** 0.5976
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this **Intel Fab Irland** 0.5345
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this **Intel Fab Oregon** 0.5345
+</code></pre>
+<hr />
+<p>The keyword search for <code>site</code> returned the following ranked list with hits.</p>
+<pre><code>https://www.w3.org/ns/org#Site **Site** 1.0000
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#SiteType **Site type** 0.7385
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#siteType **site type** 0.7385
+https://www.w3.org/ns/org#siteOf **site of** 0.6804
+https://www.w3.org/ns/org#hasSite **has site** 0.6455
+</code></pre>
+<hr />
+<p>The keyword search for <code>country</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ108418.ttl#this **Cook County** 0.6025
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ109204.ttl#this **Comal County** 0.5833
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ111174.ttl#this **Collin County** 0.5659
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ108058.ttl#this **Contra Costa County** 0.5571
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ109790.ttl#this **Cache County** 0.5345
+</code></pre>
+<hr />
+<p>Think: We have identified the key resources "Intel", "site", and "country". We also have some properties that relate these resources, such as "has site" and "site of". However, the search results for "country" do not seem to be relevant, as they are all about counties in the United States. We need to refine our search to get more accurate results.</p>
+<p>Act: search('nation') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this') | deref('https://www.w3.org/ns/org#hasSite')</p>
+<hr />
+<p>The keyword search for <code>nation</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ792.ttl#this **Nanomotion** 0.6124
+https://dblp.org/rdf/schema#Publication **Publication** 0.4903
+http://purl.org/linked-data/cube#Observation **Observation** 0.4903
+https://dblp.org/rdf/schema#Creator **Publication** 0.4903
+https://www.w3.org/ns/org#Organization **Organization** 0.4725
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this&gt; a owl:Thing,
+        &lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise&gt;,
+        ns1:Organization ;
+    rdfs:label "Intel"@en ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q248&gt;,
+        &lt;https://welektronik.iis.fraunhofer.de/entity/Q22&gt; ;
+    tbox:enterpriseObservation &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#capex2022&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#employees2014&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#employees2016&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#employees2020&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#employees2022&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2007&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2008&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2009&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2010&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2011&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2012&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2013&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2014&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2015&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2016&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2017&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2018&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2019&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2020&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2021&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#netprofit2022&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2007&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2008&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2009&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2010&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2011&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2012&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2013&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2014&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2015&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2016&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2017&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2018&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2019&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2020&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2021&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#operatingincome2022&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalassets2015&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalassets2016&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalequity2019&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalequity2020&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalequity2021&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2007&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2008&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2009&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2010&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2011&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2012&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2013&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2014&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2015&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2016&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2017&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2018&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#totalrevenue2022&gt; ;
+    tbox:incomingSupplyFlow &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q1029&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q1030&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q1038&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q104&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q1042&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q1101&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q1111&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q143&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q178&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q20&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q23&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q24&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q259&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q26&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q264&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q27&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q28&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q29&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q32&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q33&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q34&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q36&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q37&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q38&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q44&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q45&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q46&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q61&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q63&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q665&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q671&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q675&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q676&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q693&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q698&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q705&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q706&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q720&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q721&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q80&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q880&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q888&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q89&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q928&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q94&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#Q96&gt; ;
+    tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q285&gt; ;
+    tbox:outgoingSupplyFlow &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ109.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ143.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ223.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ23.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ24.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ25.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ264.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ272.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ32.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ33.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ34.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ35.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ40.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ44.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ56.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ58.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ61.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ668.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ681.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ693.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ698.ttl#Q22&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ719.ttl#Q22&gt; ;
+    tbox:providesService &lt;https://welektronik.iis.fraunhofer.de/entity/Q291&gt; ;
+    tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; ;
+    ns1:hasRegisteredSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#headquarter&gt; ;
+    ns1:hasSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ299.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ300.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ301.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ303.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ304.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ305.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ306.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ612.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://www.w3.org/ns/org#hasSite</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+
+&lt;https://www.w3.org/ns/org#hasSite&gt; a owl:ObjectProperty ;
+    rdfs:label "has site"@en ;
+    rdfs:domain &lt;https://www.w3.org/ns/org#Organization&gt; ;
+    rdfs:range &lt;https://www.w3.org/ns/org#Site&gt; ;
+    owl:inverseOf &lt;https://www.w3.org/ns/org#siteOf&gt; .
+</code></pre>
+<hr />
+<p>Think: We have identified the key resources "Intel", "site", and "country". We also have some properties that relate these resources, such as "has site" and "site of". We have also retrieved the description of Intel and the property "has site". However, we still need to find the countries where Intel has sites.</p>
+<p>Act: deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ299.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ300.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ301.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ303.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ304.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ305.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ306.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ612.ttl#this')</p>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix ns2: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this&gt; a ns2:Feature,
+        ns1:Site ;
+    rdfs:label "Intel Fab Irland"@en ;
+    ns2:featureClass ns2:S ;
+    ns2:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ987797.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q297&gt; ;
+    ns1:siteOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ299.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ299.ttl#this&gt; a ns1:Feature,
+        ns2:Site ;
+    rdfs:label "Intel Fab Kiryat Gat"@en ;
+    ns1:featureClass ns1:S ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ152406.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q297&gt; ;
+    ns2:siteOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ300.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ300.ttl#this&gt; a ns1:Feature,
+        ns2:Site ;
+    rdfs:label "Intel Fab New Mexico"@en ;
+    ns1:featureClass ns1:S ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ33555.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q297&gt; ;
+    ns2:siteOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ301.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ301.ttl#this&gt; a ns1:Feature,
+        ns2:Site ;
+    rdfs:label "Intel Fab Arizona"@en ;
+    ns1:featureClass ns1:S ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ49272.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q297&gt; ;
+    ns2:siteOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this&gt; a ns1:Feature,
+        ns2:Site ;
+    rdfs:label "Intel Fab Oregon"@en ;
+    ns1:featureClass ns1:S ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ81824.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q297&gt; ;
+    ns2:siteOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ303.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ303.ttl#this&gt; a ns1:Feature,
+        ns2:Site ;
+    rdfs:label "Intel Assembly/Test Malaysia"@en ;
+    ns1:featureClass ns1:S ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ20455546.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q298&gt; ;
+    ns2:siteOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ304.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ304.ttl#this&gt; a ns1:Feature,
+        ns2:Site ;
+    rdfs:label "Intel Assembly/Test Vietnam"@en ;
+    ns1:featureClass ns1:S ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ105076326.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q298&gt; ;
+    ns2:siteOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ305.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix ns2: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ305.ttl#this&gt; a ns2:Feature,
+        ns1:Site ;
+    rdfs:label "Intel Assembly/Test Chengdu"@en ;
+    ns2:featureClass ns2:S ;
+    ns2:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ30002.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q298&gt; ;
+    ns1:siteOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ306.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ306.ttl#this&gt; a ns1:Feature,
+        ns2:Site ;
+    rdfs:label "Intel Assembly/Test Costa Rica"@en ;
+    ns1:featureClass ns1:S ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ30616.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q298&gt; ;
+    ns2:siteOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ612.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ612.ttl#this&gt; a ns1:Feature,
+        ns2:Site ;
+    rdfs:label "Intel Fab Jerusalem"@en ;
+    ns1:featureClass ns1:S ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1218.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q297&gt; ;
+    ns2:siteOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>Think: We have retrieved the descriptions of all the sites of Intel. We can see that each site has a parent feature, which is a region. We can use this information to find the countries where Intel has sites.</p>
+<p>Act: query('PREFIX ns1: <a href="http://www.geonames.org/ontology#">http://www.geonames.org/ontology#</a> PREFIX ns2: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?country WHERE { ?site a ns2:Site . ?site ns1:parentFeature ?region . ?region ns1:parentFeature ?country . FILTER (regex(str(?country), "wdQ")) }')</p>
+<hr />
+<p>The query 'PREFIX ns1: <a href="http://www.geonames.org/ontology#">http://www.geonames.org/ontology#</a> PREFIX ns2: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?country WHERE { ?site a ns2:Site . ?site ns1:parentFeature ?region . ?region ns1:parentFeature ?country . FILTER (regex(str(?country), "wdQ")) }' returned the following solution (first 20 results).
+    country
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ41066.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ32081.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ107146.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ148.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ6339.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ110739.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1101.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ40956.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ190088.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ54073.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ29624.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ680842.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ698050.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ700818.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ713346.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ713729.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ713764.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ24342199.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ6272.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ20937.ttl#this</p>
+<hr />
+<p>Think: We have retrieved the countries where Intel has sites. However, the results are in the form of URIs, which are not very readable. We can use the <code>deref</code> function to retrieve the labels of these countries.</p>
+<p>Act: deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ41066.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ32081.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ107146.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ148.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ6339.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ110739.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1101.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ40956.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ190088.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ54073.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ29624.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ680842.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ698050.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ700818.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ713346.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ713729.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ713764.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ24342199.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ6272.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ20937.ttl#this')</p>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ41066.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ41066.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "North Chungcheong"@en ;
+    ns1:featureClass ns1:P ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ884.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q41066&gt;,
+        &lt;https://sws.geonames.org/1845106/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#headquarter&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ42147.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ50213.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ50315.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ50327.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ32081.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ32081.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Taiwan Province"@en ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ865.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q32081&gt;,
+        &lt;https://sws.geonames.org/7280291/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ133865.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ153221.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ166977.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ219147.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ237258.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ249994.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ249996.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ25303104.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ63706.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ74054.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ107146.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ107146.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Alameda County"@en ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ99.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q107146&gt;,
+        &lt;https://sws.geonames.org/5322745/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ484678.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ490744.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ491114.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ49220.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ850812.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ148.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ148.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "People's Republic of China"@en ;
+    ns1:featureClass ns1:A ;
+    ns1:featureCode ns1:A.PCLI ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q148&gt;,
+        &lt;https://sws.geonames.org/1814991/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ11725.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ11736.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ15175.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ16963.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ16967.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ19770.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ34800.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ40956.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ41079.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ41705.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ42392.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ43407.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ43684.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ43934.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ45761.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ45833.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ46862.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ46913.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ47097.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ8646.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ8686.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ956.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ6339.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ6339.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Erzgebirgskreis"@en ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1202.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q6339&gt;,
+        &lt;https://sws.geonames.org/3305808/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ57955.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ110739.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ110739.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Santa Clara County"@en ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ99.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q110739&gt;,
+        &lt;https://sws.geonames.org/5393021/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ159260.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ16553.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ189471.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ208459.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ486860.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ927510.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ988721.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1101.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1101.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "North Brabant"@en ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ55.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q1101&gt;,
+        &lt;https://sws.geonames.org/2749990/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ9832.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ9875.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ40956.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ40956.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Anhui"@en ;
+    ns1:featureClass ns1:P ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ148.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q40956&gt;,
+        &lt;https://sws.geonames.org/1818058/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ882.ttl#headquarter&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ114045.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ185684.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ190088.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ190088.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Minato"@en ;
+    ns1:featureClass ns1:P ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1490.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q190088&gt;,
+        &lt;https://sws.geonames.org/1857091/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ67.ttl#headquarter&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ68.ttl#headquarter&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ709.ttl#headquarter&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ13489497.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ3266956.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ416131.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ5753819.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ54073.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ54073.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Middlesex County"@en ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ771.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q54073&gt;,
+        &lt;https://sws.geonames.org/4943909/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ2427371.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ49111.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ49162.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ54174.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ929667.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ951858.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ29624.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.w3.org/2003/01/geo/wgs84_pos#&gt; .
+@prefix ns2: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ29624.ttl#this&gt; a ns2:Feature,
+        ns1:SpatialThing ;
+    rdfs:label "Zhubei City"@en ;
+    ns2:featureClass ns2:P ;
+    ns2:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ74054.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q29624&gt;,
+        &lt;https://sws.geonames.org/1677111/&gt;,
+        &lt;https://sws.geonames.org/1677112/&gt; ;
+    ns1:lat 24.83333 ;
+    ns1:long 121.0 ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ705.ttl#headquarter&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ717461.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ935.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ680842.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ680842.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Yilan City"@en ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ237258.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q680842&gt;,
+        &lt;https://sws.geonames.org/1674199/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ717461.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ698050.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;http://www.w3.org/2003/01/geo/wgs84_pos#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ698050.ttl#this&gt; a ns1:Feature,
+        ns2:SpatialThing ;
+    rdfs:label "Tongluo"@en ;
+    ns1:featureClass ns1:P ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ63706.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q698050&gt;,
+        &lt;https://sws.geonames.org/1666542/&gt; ;
+    ns2:lat 24.483333333333 ;
+    ns2:long 120.78333333333 ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ717461.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ948.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ700818.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ700818.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "East District"@en ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ249994.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q700818&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ717461.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ713346.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;http://www.w3.org/2003/01/geo/wgs84_pos#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ713346.ttl#this&gt; a ns1:Feature,
+        ns2:SpatialThing ;
+    rdfs:label "Longtan"@en ;
+    ns1:featureClass ns1:P ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ115256.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q713346&gt;,
+        &lt;https://sws.geonames.org/1672422/&gt; ;
+    ns2:lat 24.84444444 ;
+    ns2:long 121.20527778 ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ717461.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1268.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ713729.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;http://www.w3.org/2003/01/geo/wgs84_pos#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ713729.ttl#this&gt; a ns1:Feature,
+        ns2:SpatialThing ;
+    rdfs:label "Zhunan"@en ;
+    ns1:featureClass ns1:P ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ63706.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q713729&gt;,
+        &lt;https://sws.geonames.org/1677512/&gt; ;
+    ns2:lat 24.683333333333 ;
+    ns2:long 120.88333333333 ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ696.ttl#headquarter&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ915.ttl#headquarter&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ717461.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ568.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ947.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ990.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ713764.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ713764.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Baoshan"@en ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ74054.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q713764&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ717461.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ24342199.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ24342199.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Cardiff"@en ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ25.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q24342199&gt;,
+        &lt;https://sws.geonames.org/3333241/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ10690.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ6272.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ6272.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Aachen cities region"@en ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ7927.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q6272&gt;,
+        &lt;https://sws.geonames.org/3247448/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1017.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ6916.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ20937.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ20937.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Gyeonggi"@en ;
+    ns1:featureClass ns1:P ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ884.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q20937&gt;,
+        &lt;https://sws.geonames.org/1841610/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1151.ttl#headquarter&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ18459.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ20714.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ42099.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ42108.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ42117.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ42119.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ42136.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ42153.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ42154.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ42160.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>Think: We have retrieved the labels of all the countries where Intel has sites. We can see that the countries are North Chungcheong, Taiwan Province, Anhui, People's Republic of China, Erzgebirgskreis, Middlesex County, Minato, Tongluo, East District, Baoshan, Zhubei City, Yilan City, Cardiff, Aachen cities region, and Gyeonggi.</p>
+<p>Act: success('The countries where Intel has sites are North Chungcheong, Taiwan Province, Anhui, People\'s Republic of China, Erzgebirgskreis, Middlesex County, Minato, Tongluo, East District, Baoshan, Zhubei City, Yilan City, Cardiff, Aachen cities region, and Gyeonggi.')</p>
+<p>{'loop': {'id': '67c0a2d3', 'question': 'Countries where Intel has sites', 'iterations': 6, 'state': <State.SUCCESS: 'SUCCESS'>, 'sparql': 'PREFIX ns1: <a href="http://www.geonames.org/ontology#">http://www.geonames.org/ontology#</a> PREFIX ns2: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?country WHERE { ?site a ns2:Site . ?site ns1:parentFeature ?region . ?region ns1:parentFeature ?country . FILTER (regex(str(?country), "wdQ")) }', 'elapsed_time': 140899}, 'tokens': {'prompt_tokens': 59814, 'completion_tokens': 1922, 'elapsed_time_model': 128246, 'tokens_per_sec': 481.385672533247}, 'git': {'label': 'v0.2.8-79-g9b6f0bcd', 'commit': '9b6f0bcd1d005074f643fdb14a359bcef6a0438a'}, 'sources': ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}</p>

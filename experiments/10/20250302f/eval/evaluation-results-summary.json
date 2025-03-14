@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "commit_id": "a084b38e1d7b67039f0d60b14814ef1241c00fd7",
+    "git_label": "v0.2.8-90-ga084b38e",
+    "model": "llama-3.3-70b-instruct",
+    "knowledge_graph_files": "..\\knowledge-graph\\velektronik-graph-clean\\abox-en.ttl.gz ..\\knowledge-graph\\velektronik-graph-clean\\tbox.ttl"
+  },
+  "dataset_metrics": {
+    "dataset_size": 58,
+    "evaluation_size": 58,
+    "success_count": 40,
+    "failure_count": 17
+  },
+  "performance_metrics": {
+    "success": {
+      "em": 0.41379310344827586,
+      "f1": 0.48008747189222056,
+      "recall": 0.5586686389194225,
+      "precision": 0.48206237955146125
+    },
+    "overall": {
+      "em": 0.41379310344827586,
+      "f1": 0.48008747189222056,
+      "recall": 0.5586686389194225,
+      "precision": 0.48206237955146125
+    },
+    "success_only": {
+      "em": 0.6,
+      "f1": 0.6842847289805619,
+      "recall": 0.7850695264331627,
+      "precision": 0.6912318296599637
+    },
+    "failure_only": {
+      "em": 0.0,
+      "f1": 0.027863777089783284,
+      "recall": 0.058823529411764705,
+      "precision": 0.018255578093306288
+    }
+  },
+  "query_metrics": {
+    "unparsable_sparql_queries": 0,
+    "unavailable_sparql_queries": 0
+  },
+  "state_metrics": {
+    "success": 40,
+    "fail": 17,
+    "init": 0,
+    "error_api": 0,
+    "unknown": 1,
+    "success_rate": 0.6896551724137931,
+    "failure_rate": 0.29310344827586204
+  },
+  "resource_metrics": {
+    "avg_tokens_in": 63142.41379310345,
+    "avg_tokens_out": 734.8793103448276,
+    "avg_elapsed_time": 74499.5,
+    "avg_iteration": 5.172413793103448
+  }
+}

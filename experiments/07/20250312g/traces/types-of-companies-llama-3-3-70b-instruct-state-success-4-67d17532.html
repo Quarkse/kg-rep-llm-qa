@@ -1,0 +1,190 @@
+<p>Task</p>
+<p>You are Graf von Data, an assistant designed to formulate a query based on input from User.</p>
+<p>Process</p>
+<p>You interact with a knowledge graph in a strict think-act-observe cycle.</p>
+<ol>
+<li>Think: Analyse the question from User and the descriptions in the representations gathered so far.</li>
+<li>Act: Choose available actions (listed below) that will best progress towards formulating the query.</li>
+<li>Observe: HALT. System will provide the result of your chosen actions in the next cycle.</li>
+</ol>
+<p>In your response, start with a <code>Think:</code> section followed by an <code>Act:</code> section.</p>
+<p>Actions</p>
+<p>You can issue one or multiple of the following actions.</p>
+<ul>
+<li><code>search(keywords: string)</code>: Get URIs to resources matching the given <code>keywords</code>. Look for URIs that identify entities, i.e., make two calls: <code>search('foo')</code> and <code>search('bar')</code> instead of <code>search('foo bar')</code>.</li>
+<li><code>deref(resource URI: string)</code>: Get all triples with <code>resource URI</code> in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with <code>deref()</code>.</li>
+<li><code>query(sparql: string)</code>: Evaluate <code>sparql</code> and get solutions. Consider using path expressions, i.e., <code>*</code> or <code>+</code> for paths of transitive properties and <code>|</code> for alternative paths.</li>
+</ul>
+<p>You issue run actions concurrently using <code>|</code>, e.g., <code>search('foo') | search('bar')</code>.
+Format action calls as follows: <code>Act: describe('http://foo/bar')</code> or <code>Act: query('PREFIX : &lt;#&gt; SELECT DISTINCT ?x WHERE { ... }')</code>.
+Use quotes for arguments.</p>
+<p>Chat</p>
+<p>Sometimes User does not seek factual information.</p>
+<ul>
+<li><code>chat(text: string)</code>: Issue a <code>chat()</code> action if User does not seek factual information from the knowledge graph.</li>
+</ul>
+<p>Conditions</p>
+<p>Once you have come up with the final query, check the query via <code>query()</code> and then end.</p>
+<ul>
+<li><code>success(text: string)</code>: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.</li>
+</ul>
+<p>If nearing about ten cycles:</p>
+<ul>
+<li><code>fail(text: string)</code>: You have no other choice than to give up. Optionally report to User the relevant steps you tried.</li>
+</ul>
+<p>Stages</p>
+<ul>
+<li>Identify key resources in the User question and find URIs via <code>Act: search()</code>.</li>
+<li>Next, dereference key resources via <code>Act: deref()</code>.
+Iteratively expand your knowledge about the graph via <code>Act: deref()</code> to gather information required to construct the query.
+Consider obtaining information about classes and properties via <code>Act: deref()</code>, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.</li>
+<li>Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.</li>
+</ul>
+<p>Critical Instructions</p>
+<ul>
+<li>Ensure that all URIs used in the query exist in the knowledge graph.</li>
+<li>Only use URIs that have been previously mentioned or discovered via <code>search()</code> or <code>deref()</code>.</li>
+<li>Never repeat successfully executed actions, the results will be the same.</li>
+</ul>
+<hr />
+<p>System has access to ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'] with 37057 triples. System version v0.2.8-91-g5e507554 is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.</p>
+<hr />
+<p>Types of companies</p>
+<hr />
+<p>Think: The user is asking about different types of companies. This is a broad topic and can be categorized in various ways, such as by industry, size, ownership structure, or legal form. To formulate a query, we need to identify the key resources and concepts related to company types.</p>
+<p>Act: search('company types') | search('business types') | search('enterprise types') | search('organization types') | search('firm types')</p>
+<hr />
+<p>The keyword search for <code>company types</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this **Active Business Company** 0.3615
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#this **Nepes** 0.2928
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this **Taiwan Semiconductor Manufacturing Company** 0.2725
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ664.ttl#this **Taiwan Semiconductor Manufacturing Company Taoyuan Fab** 0.2667
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ660.ttl#this **Taiwan Semiconductor Manufacturing Company Tainan Fab** 0.2645
+</code></pre>
+<hr />
+<p>The keyword search for <code>business types</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this **Active Business Company** 0.4000
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ5110386.ttl#this **Tampines** 0.3162
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#this **Nepes** 0.2835
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ928.ttl#this **Philippines** 0.2774
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ647.ttl#this **Rennes** 0.2652
+</code></pre>
+<hr />
+<p>The keyword search for <code>enterprise types</code> returned the following ranked list with hits.</p>
+<pre><code>https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise **Enterprise** 0.7485
+https://welektronik.iis.fraunhofer.de/entity/Q1045 **Enterprise size** 0.6288
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#observedEnterprise **observed enterprise** 0.5143
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#siteType **site type** 0.2843
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#SiteType **Site type** 0.2843
+</code></pre>
+<hr />
+<p>The keyword search for <code>organization types</code> returned the following ranked list with hits.</p>
+<pre><code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationType **organization type** 0.8721
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#OrganizationType **Organization type** 0.8721
+https://www.w3.org/ns/org#Organization **Organization** 0.7769
+http://purl.org/linked-data/cube#Observation **Observation** 0.3101
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ260.ttl#this **Imagination Technologies** 0.3070
+</code></pre>
+<hr />
+<p>The keyword search for <code>firm types</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#this **Nepes** 0.3419
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1166.ttl#this **Firebird Optics** 0.2925
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#siteType **site type** 0.2727
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#SiteType **Site type** 0.2727
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1085.ttl#this **Fiven** 0.2279
+</code></pre>
+<hr />
+<p>Think: The search results provide various types of companies, including Active Business Company, Nepes, Taiwan Semiconductor Manufacturing Company, and Imagination Technologies. Additionally, the results include concepts such as enterprise types, organization types, and site types. To further understand the types of companies, we need to dereference the key resources and gather more information.</p>
+<p>Act: deref('https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise') | deref('https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationType') | deref('https://www.w3.org/ns/org#Organization') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#this')</p>
+<hr />
+<p>The description of <code>https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+
+&lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise&gt; a rdfs:Class ;
+    rdfs:label "Enterprise"@en ;
+    rdfs:subClassOf &lt;https://www.w3.org/ns/org#Organization&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationType</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+tbox:organizationType a owl:ObjectProperty ;
+    rdfs:label "organization type"@en ;
+    rdfs:domain &lt;https://www.w3.org/ns/org#Organization&gt; ;
+    rdfs:range tbox:OrganizationType .
+</code></pre>
+<hr />
+<p>The description of <code>https://www.w3.org/ns/org#Organization</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+
+&lt;https://www.w3.org/ns/org#Organization&gt; a rdfs:Class ;
+    rdfs:label "Organization"@en ;
+    rdfs:subClassOf owl:Thing .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this&gt; a owl:Thing,
+        &lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise&gt;,
+        ns2:Organization ;
+    rdfs:label "Active Business Company"@en ;
+    ns1:locatedIn &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ279128.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q124743799&gt;,
+        &lt;https://welektronik.iis.fraunhofer.de/entity/Q1104&gt; ;
+    tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q1060&gt; ;
+    ns2:hasRegisteredSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#headquarter&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix ns2: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#this&gt; a owl:Thing,
+        &lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise&gt;,
+        ns1:Organization ;
+    rdfs:label "Nepes"@en ;
+    ns2:locatedIn &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ41066.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ884.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q117263076&gt;,
+        &lt;https://welektronik.iis.fraunhofer.de/entity/Q906&gt; ;
+    tbox:hasCustomer &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ28.ttl#this&gt; ;
+    tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q879&gt; ;
+    tbox:providesService &lt;https://welektronik.iis.fraunhofer.de/entity/Q289&gt;,
+        &lt;https://welektronik.iis.fraunhofer.de/entity/Q290&gt; ;
+    ns1:hasRegisteredSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#headquarter&gt; ;
+    ns1:hasSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ976.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ977.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ978.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ979.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>Think: The descriptions of the key resources provide information about the types of companies, including Active Business Company and Nepes. The results also include concepts such as enterprise types, organization types, and site types. To further understand the types of companies, we need to query the knowledge graph to retrieve a list of company types.</p>
+<p>Act: query('PREFIX : <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX org: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?companyType WHERE { ?company a org:Organization . ?company :organizationType ?companyType . }')</p>
+<hr />
+<p>The query 'PREFIX : <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX org: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?companyType WHERE { ?company a org:Organization . ?company :organizationType ?companyType . }' returned the following solution.</p>
+<pre><code>companyType
+https://welektronik.iis.fraunhofer.de/entity/Q1023
+https://welektronik.iis.fraunhofer.de/entity/Q285
+https://welektronik.iis.fraunhofer.de/entity/Q1060
+https://welektronik.iis.fraunhofer.de/entity/Q287
+https://welektronik.iis.fraunhofer.de/entity/Q286
+https://welektronik.iis.fraunhofer.de/entity/Q879
+</code></pre>
+<hr />
+<p>Think: The query results provide a list of company types, including https://welektronik.iis.fraunhofer.de/entity/Q1023, https://welektronik.iis.fraunhofer.de/entity/Q285, https://welektronik.iis.fraunhofer.de/entity/Q1060, https://welektronik.iis.fraunhofer.de/entity/Q287, https://welektronik.iis.fraunhofer.de/entity/Q286, and https://welektronik.iis.fraunhofer.de/entity/Q879. To provide a concise message to the user, we can confirm that the query is final and provide a brief explanation of the steps taken.</p>
+<p>Act: success('The query to retrieve company types has been successfully executed, and the results include various types such as https://welektronik.iis.fraunhofer.de/entity/Q1023, https://welektronik.iis.fraunhofer.de/entity/Q285, https://welektronik.iis.fraunhofer.de/entity/Q1060, https://welektronik.iis.fraunhofer.de/entity/Q287, https://welektronik.iis.fraunhofer.de/entity/Q286, and https://welektronik.iis.fraunhofer.de/entity/Q879.')</p>
+<p>{'loop': {'id': '67d17532', 'question': 'Types of companies', 'iterations': 4, 'state': <State.SUCCESS: 'SUCCESS'>, 'sparql': 'PREFIX : <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX org: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?companyType WHERE { ?company a org:Organization . ?company :organizationType ?companyType . }', 'elapsed_time': 58201}, 'tokens': {'prompt_tokens': 11339, 'completion_tokens': 765, 'elapsed_time_model': 46341, 'tokens_per_sec': 261.19153643791014}, 'git': {'label': 'v0.2.8-91-g5e507554', 'commit': '5e507554e7591bf3e1500b8f32ab0205253aa1ca'}, 'sources': ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}</p>

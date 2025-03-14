@@ -1,0 +1,253 @@
+<p>Task</p>
+<p>You are Graf von Data, an assistant designed to formulate a query based on input from User.</p>
+<p>Process</p>
+<p>You interact with a knowledge graph in a strict think-act-observe cycle.</p>
+<ol>
+<li>Think: Analyse the question from User and the descriptions in the representations gathered so far.</li>
+<li>Act: Choose available actions (listed below) that will best progress towards formulating the query.</li>
+<li>Observe: HALT. System will provide the result of your chosen actions in the next cycle.</li>
+</ol>
+<p>In your response, start with a <code>Think:</code> section followed by an <code>Act:</code> section.</p>
+<p>Actions</p>
+<p>You can issue one or multiple of the following actions.</p>
+<ul>
+<li><code>search(keywords: string)</code>: Get URIs to resources matching the given <code>keywords</code>. Look for URIs that identify entities, i.e., make two calls: <code>search('foo')</code> and <code>search('bar')</code> instead of <code>search('foo bar')</code>.</li>
+<li><code>deref(resource URI: string)</code>: Get all triples with <code>resource URI</code> in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with <code>deref()</code>.</li>
+<li><code>query(sparql: string)</code>: Evaluate <code>sparql</code> and get solutions. Consider using path expressions, i.e., <code>*</code> or <code>+</code> for paths of transitive properties and <code>|</code> for alternative paths.</li>
+</ul>
+<p>You issue run actions concurrently using <code>|</code>, e.g., <code>search('foo') | search('bar')</code>.
+Format action calls as follows: <code>Act: describe('http://foo/bar')</code> or <code>Act: query('PREFIX : &lt;#&gt; SELECT DISTINCT ?x WHERE { ... }')</code>.
+Use quotes for arguments.</p>
+<p>Chat</p>
+<p>Sometimes User does not seek factual information.</p>
+<ul>
+<li><code>chat(text: string)</code>: Issue a <code>chat()</code> action if User does not seek factual information from the knowledge graph.</li>
+</ul>
+<p>Conditions</p>
+<p>Once you have come up with the final query, check the query via <code>query()</code> and then end.</p>
+<ul>
+<li><code>success(text: string)</code>: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.</li>
+</ul>
+<p>If nearing about ten cycles:</p>
+<ul>
+<li><code>fail(text: string)</code>: You have no other choice than to give up. Optionally report to User the relevant steps you tried.</li>
+</ul>
+<p>Stages</p>
+<ul>
+<li>Identify key resources in the User question and find URIs via <code>Act: search()</code>.</li>
+<li>Next, dereference key resources via <code>Act: deref()</code>.
+Iteratively expand your knowledge about the graph via <code>Act: deref()</code> to gather information required to construct the query.
+Consider obtaining information about classes and properties via <code>Act: deref()</code>, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.</li>
+<li>Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.</li>
+</ul>
+<p>Critical Instructions</p>
+<ul>
+<li>Ensure that all URIs used in the query exist in the knowledge graph.</li>
+<li>Only use URIs that have been previously mentioned or discovered via <code>search()</code> or <code>deref()</code>.</li>
+<li>Never repeat successfully executed actions, the results will be the same.</li>
+</ul>
+<hr />
+<p>System has access to ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'] with 32276 triples. System version v0.2.8-91-g5e507554 is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.</p>
+<hr />
+<p>IDMs with sites in Nuremberg</p>
+<hr />
+<p>Think: The user is asking for IDM (likely Identity Management or other possible expansions) with sites in Nuremberg. To formulate a query, we need to identify key resources such as "IDM" and "Nuremberg" and find their corresponding URIs in the knowledge graph.</p>
+<p>Act: search('IDM') | search('Nuremberg')</p>
+<hr />
+<p>The keyword search for <code>IDM</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ58.ttl#this **IBM** 0.5164
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1221.ttl#this **Idaho** 0.4364
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ259.ttl#this **arm** 0.2582
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ3012.ttl#this **Ulm** 0.2582
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ928.ttl#this **AEM** 0.2582
+</code></pre>
+<hr />
+<p>The keyword search for <code>Nuremberg</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ2090.ttl#this **Nuremberg** 1.0000
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ539.ttl#this **Semikron Nuremberg Fab** 0.5539
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ258208.ttl#this **Neubiberg** 0.4545
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ985.ttl#this **Baden-Württemberg** 0.4150
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ14819.ttl#this **Freiberg** 0.3814
+</code></pre>
+<hr />
+<p>Think: The search results for "IDM" did not yield a clear result for Identity Management or a similar concept, but rather companies and regions. The search results for "Nuremberg" provided a clear result for the city of Nuremberg and some related sites and regions. To proceed, we should dereference the URI for Nuremberg to gather more information about the city and its related entities.</p>
+<p>Act: deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ2090.ttl#this') | search('Identity Management')</p>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ2090.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix ns2: &lt;http://www.w3.org/2003/01/geo/wgs84_pos#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ2090.ttl#this&gt; a ns1:Feature,
+        ns2:SpatialThing ;
+    rdfs:label "Nuremberg"@en ;
+    ns1:featureClass ns1:P ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ10551.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q2090&gt;,
+        &lt;https://sws.geonames.org/6556832/&gt; ;
+    ns2:lat 49.45388888888889 ;
+    ns2:long 11.0775 .
+</code></pre>
+<hr />
+<p>The keyword search for <code>Identity Management</code> returned the following ranked list with hits.</p>
+<pre><code>http://www.geonames.org/ontology#A.PCLI **independent political entity** 0.4022
+http://xmlns.com/foaf/0.1/Document **Document** 0.3371
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ196.ttl#this **Cyient** 0.3015
+https://welektronik.iis.fraunhofer.de/entity/Q1023 **Equipment manufacturer** 0.2611
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ90932.ttl#this **Arrondissement of Oudenaarde** 0.2335
+</code></pre>
+<hr />
+<p>Think: The search results for "Identity Management" did not yield a clear result for the concept of Identity Management. The description of Nuremberg provided some information about the city, but not about companies or organizations related to Identity Management. To proceed, we should try to find companies or organizations that have sites in Nuremberg and are related to Identity Management.</p>
+<p>Act: search('companies in Nuremberg') | search('Identity Management companies') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ539.ttl#this')</p>
+<hr />
+<p>The keyword search for <code>companies in Nuremberg</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ2090.ttl#this **Nuremberg** 0.6287
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ539.ttl#this **Semikron Nuremberg Fab** 0.4256
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ985.ttl#this **Baden-Württemberg** 0.2870
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ14819.ttl#this **Freiberg** 0.2638
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1438.ttl#this **Campania** 0.2638
+</code></pre>
+<hr />
+<p>The keyword search for <code>Identity Management companies</code> returned the following ranked list with hits.</p>
+<pre><code>http://www.geonames.org/ontology#A.PCLI **independent political entity** 0.3388
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ91450.ttl#this **Arrondissement of Ypres** 0.2514
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ702196.ttl#this **arrondissement of Rennes** 0.2466
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ6363765.ttl#this **Kanksa community development block** 0.2395
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ109265.ttl#this **Denton County** 0.2319
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ539.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ539.ttl#this&gt; a ns1:Feature,
+        &lt;https://www.w3.org/ns/org#Site&gt; ;
+    rdfs:label "Semikron Nuremberg Fab"@en ;
+    ns1:featureClass ns1:S ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ2090.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q297&gt; .
+</code></pre>
+<hr />
+<p>Think: The search results for "companies in Nuremberg" and "Identity Management companies" did not yield clear results for companies related to Identity Management in Nuremberg. The description of Semikron Nuremberg Fab provided some information about the site, but not about its relation to Identity Management. To proceed, we should try to find more information about companies in Nuremberg and their relation to Identity Management.</p>
+<p>Act: search('Semikron Identity Management') | deref('https://welektronik.iis.fraunhofer.de/entity/Q297') | query('PREFIX : <a href="https://welektronik.iis.fraunhofer.de/entity/">https://welektronik.iis.fraunhofer.de/entity/</a> PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT DISTINCT ?x WHERE { ?x tbox:siteType :Q297 }')</p>
+<hr />
+<p>The keyword search for <code>Semikron Identity Management</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ170.ttl#this **Semikron** 0.5112
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ539.ttl#this **Semikron Nuremberg Fab** 0.3300
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ169.ttl#this **Mikron** 0.3175
+http://www.geonames.org/ontology#A.PCLI **independent political entity** 0.3080
+http://xmlns.com/foaf/0.1/Document **Document** 0.2840
+</code></pre>
+<hr />
+<p>The description of <code>https://welektronik.iis.fraunhofer.de/entity/Q297</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q297&gt; a tbox:SiteType ;
+    rdfs:label "Chip fab"@en .
+</code></pre>
+<hr />
+<p>The query 'PREFIX : <a href="https://welektronik.iis.fraunhofer.de/entity/">https://welektronik.iis.fraunhofer.de/entity/</a> PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT DISTINCT ?x WHERE { ?x tbox:siteType :Q297 }' returned the following solution (first 20 results).
+    x
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ299.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ300.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ301.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ307.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ308.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ309.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ310.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ311.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ312.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ313.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ314.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ315.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ322.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ323.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ324.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ327.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ328.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ329.ttl#this</p>
+<hr />
+<p>Think: The search results for "Semikron Identity Management" did not yield clear results for Semikron's relation to Identity Management. The description of the site type "Chip fab" provided some information about the type of site, but not about its relation to Identity Management. The query results provided a list of sites with the type "Chip fab", but did not provide information about their relation to Identity Management. To proceed, we should try to find more information about the companies related to these sites and their relation to Identity Management.</p>
+<p>Act: query('PREFIX : <a href="https://welektronik.iis.fraunhofer.de/entity/">https://welektronik.iis.fraunhofer.de/entity/</a> PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT DISTINCT ?x ?y WHERE { ?x tbox:siteType :Q297 . ?x :hasCompany ?y }') | search('Identity Management in Nuremberg') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ170.ttl#this')</p>
+<hr />
+<p>No results for <code>query('PREFIX : &lt;https://welektronik.iis.fraunhofer.de/entity/&gt; PREFIX tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; SELECT DISTINCT ?x ?y WHERE { ?x tbox:siteType :Q297 . ?x :hasCompany ?y }')</code>.</p>
+<hr />
+<p>The keyword search for <code>Identity Management in Nuremberg</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ2090.ttl#this **Nuremberg** 0.5096
+http://www.geonames.org/ontology#A.PCLI **independent political entity** 0.3479
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ539.ttl#this **Semikron Nuremberg Fab** 0.3450
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ985.ttl#this **Baden-Württemberg** 0.2714
+https://welektronik.iis.fraunhofer.de/entity/Q1023 **Equipment manufacturer** 0.2415
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ170.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ170.ttl#this&gt; a owl:Thing,
+        &lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise&gt;,
+        ns1:Organization ;
+    rdfs:label "Semikron"@en ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q320932&gt;,
+        &lt;https://welektronik.iis.fraunhofer.de/entity/Q170&gt; ;
+    tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q285&gt; ;
+    tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1047&gt; ;
+    ns1:hasRegisteredSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ170.ttl#headquarter&gt; ;
+    ns1:hasSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ539.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>Think: The search results for "Identity Management in Nuremberg" did not yield clear results for companies related to Identity Management in Nuremberg. The description of Semikron provided some information about the company, but not about its relation to Identity Management. To proceed, we should try to find more information about the company's products or services and their relation to Identity Management.</p>
+<p>Act: search('Semikron products') | search('Identity Management solutions') | query('PREFIX : <a href="https://welektronik.iis.fraunhofer.de/entity/">https://welektronik.iis.fraunhofer.de/entity/</a> PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT DISTINCT ?x WHERE { ?x tbox:organizationType :Q285 }')</p>
+<hr />
+<p>The keyword search for <code>Semikron products</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ170.ttl#this **Semikron** 0.6529
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ539.ttl#this **Semikron Nuremberg Fab** 0.4215
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ169.ttl#this **Mikron** 0.4056
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1163.ttl#this **Semiconductor Electronics** 0.3532
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ134.ttl#this **Seoul Semiconductor** 0.3349
+</code></pre>
+<hr />
+<p>The keyword search for <code>Identity Management solutions</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ800.ttl#this **International Test Solutions** 0.4244
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ32.ttl#this **Skyworks Solutions** 0.3953
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ272.ttl#this **MACOM Technology Solutions** 0.3675
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1044.ttl#this **LG Chem Water Solutions** 0.3536
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ801.ttl#this **International Test Solutions Reno Fab** 0.3505
+</code></pre>
+<hr />
+<p>The query 'PREFIX : <a href="https://welektronik.iis.fraunhofer.de/entity/">https://welektronik.iis.fraunhofer.de/entity/</a> PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT DISTINCT ?x WHERE { ?x tbox:organizationType :Q285 }' returned the following solution (first 20 results).
+    x
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ103.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ105.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ107.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ120.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ122.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ125.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ128.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ139.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ142.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ168.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ60.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ678.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ692.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ729.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ733.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ75.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ78.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ792.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ800.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ88.ttl#this</p>
+<hr />
+<p>Think: The search results for "Semikron products" and "Identity Management solutions" did not yield clear results for companies related to Identity Management in Nuremberg. The query results provided a list of companies with the organization type "Q285", but did not provide information about their relation to Identity Management. To proceed, we should try to find more information about the companies and their products or services.</p>
+<p>Act: fail('No clear results found for IDM with sites in Nuremberg.')</p>
+<p>{'loop': {'id': '67d0884a', 'question': 'IDMs with sites in Nuremberg', 'iterations': 7, 'state': <State.FAIL: 'FAIL'>, 'sparql': 'PREFIX : <a href="https://welektronik.iis.fraunhofer.de/entity/">https://welektronik.iis.fraunhofer.de/entity/</a> PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT DISTINCT ?x WHERE { ?x tbox:organizationType :Q285 }', 'elapsed_time': 85020}, 'tokens': {'prompt_tokens': 24657, 'completion_tokens': 1072, 'elapsed_time_model': 68337, 'tokens_per_sec': 376.4984391233547}, 'git': {'label': 'v0.2.8-91-g5e507554', 'commit': '5e507554e7591bf3e1500b8f32ab0205253aa1ca'}, 'sources': ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}</p>

@@ -1,0 +1,155 @@
+<p>Task</p>
+<p>You are Graf von Data, an assistant designed to formulate a query based on input from User.</p>
+<p>Process</p>
+<p>You interact with a knowledge graph in a strict think-act-observe cycle.</p>
+<ol>
+<li>Think: Analyse the question from User and the descriptions in the representations gathered so far.</li>
+<li>Act: Choose available actions (listed below) that will best progress towards formulating the query.</li>
+<li>Observe: HALT. System will provide the result of your chosen actions in the next cycle.</li>
+</ol>
+<p>In your response, start with a <code>Think:</code> section followed by an <code>Act:</code> section.</p>
+<p>Actions</p>
+<p>You can issue one or multiple of the following actions.</p>
+<ul>
+<li><code>search(keywords: string)</code>: Get URIs to resources matching the given <code>keywords</code>. Look for URIs that identify entities, i.e., make two calls: <code>search('foo')</code> and <code>search('bar')</code> instead of <code>search('foo bar')</code>.</li>
+<li><code>deref(resource URI: string)</code>: Get all triples with <code>resource URI</code> in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with <code>deref()</code>.</li>
+<li><code>query(sparql: string)</code>: Evaluate <code>sparql</code> and get solutions. Consider using path expressions, i.e., <code>*</code> or <code>+</code> for paths of transitive properties and <code>|</code> for alternative paths.</li>
+</ul>
+<p>You issue run actions concurrently using <code>|</code>, e.g., <code>search('foo') | search('bar')</code>.
+Format action calls as follows: <code>Act: describe('http://foo/bar')</code> or <code>Act: query('PREFIX : &lt;#&gt; SELECT DISTINCT ?x WHERE { ... }')</code>.
+Use quotes for arguments.</p>
+<p>Chat</p>
+<p>Sometimes User does not seek factual information.</p>
+<ul>
+<li><code>chat(text: string)</code>: Issue a <code>chat()</code> action if User does not seek factual information from the knowledge graph.</li>
+</ul>
+<p>Conditions</p>
+<p>Once you have come up with the final query, check the query via <code>query()</code> and then end.</p>
+<ul>
+<li><code>success(text: string)</code>: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.</li>
+</ul>
+<p>If nearing about ten cycles:</p>
+<ul>
+<li><code>fail(text: string)</code>: You have no other choice than to give up. Optionally report to User the relevant steps you tried.</li>
+</ul>
+<p>Stages</p>
+<ul>
+<li>Identify key resources in the User question and find URIs via <code>Act: search()</code>.</li>
+<li>Next, dereference key resources via <code>Act: deref()</code>.
+Iteratively expand your knowledge about the graph via <code>Act: deref()</code> to gather information required to construct the query.
+Consider obtaining information about classes and properties via <code>Act: deref()</code>, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.</li>
+<li>Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.</li>
+</ul>
+<p>Critical Instructions</p>
+<ul>
+<li>Ensure that all URIs used in the query exist in the knowledge graph.</li>
+<li>Only use URIs that have been previously mentioned or discovered via <code>search()</code> or <code>deref()</code>.</li>
+<li>Never repeat successfully executed actions, the results will be the same.</li>
+</ul>
+<hr />
+<p>System has access to ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'] with 43248 triples. System version v0.2.8-79-g9b6f0bcd is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.</p>
+<hr />
+<p>Services offered by German companies</p>
+<hr />
+<p>Think: The User is asking about services offered by German companies. To formulate a query, we need to identify key resources such as German companies and the services they offer. We can start by searching for keywords related to German companies and services.</p>
+<p>Act: search('German companies') | search('services offered by companies')</p>
+<hr />
+<p>The keyword search for <code>German companies</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this **Germany** 0.4851
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1206012.ttl#this **German Reich** 0.4537
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1015874.ttl#this **Sherman Oaks** 0.3241
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ982379.ttl#this **Sherman** 0.3234
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this **Taiwan Semiconductor Manufacturing Company** 0.2559
+</code></pre>
+<hr />
+<p>The keyword search for <code>services offered by companies</code> returned the following ranked list with hits.</p>
+<pre><code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#serviceProvidedBy **service provided by** 0.4243
+https://welektronik.iis.fraunhofer.de/entity/Q293 **Service** 0.4125
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#providesService **provides service** 0.3333
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ27.ttl#this **Analog Devices** 0.2652
+https://welektronik.iis.fraunhofer.de/entity/Q291 **Foundry Service** 0.2572
+</code></pre>
+<hr />
+<p>Think: We have identified some key resources such as German companies and services offered by companies. We can now dereference these resources to gather more information.</p>
+<p>Act: deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this') | deref('https://welektronik.iis.fraunhofer.de/entity/Q293') | deref('https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#serviceProvidedBy')</p>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this&gt; a ns1:Feature ;
+    rdfs:label "Germany"@en ;
+    ns1:featureClass ns1:A ;
+    ns1:featureCode ns1:A.PCLI ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q183&gt;,
+        &lt;https://sws.geonames.org/2921044/&gt; ;
+    tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1055.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1194.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1197.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1198.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1199.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1200.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1202.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1205.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1208.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ64.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ980.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ985.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://welektronik.iis.fraunhofer.de/entity/Q293</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q293&gt; a rdfs:Class ;
+    rdfs:label "Service"@en ;
+    rdfs:subClassOf skos:Concept .
+</code></pre>
+<hr />
+<p>The description of <code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#serviceProvidedBy</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+tbox:serviceProvidedBy a owl:ObjectProperty ;
+    rdfs:label "service provided by"@en ;
+    rdfs:domain &lt;https://welektronik.iis.fraunhofer.de/entity/Q293&gt; ;
+    rdfs:range &lt;https://www.w3.org/ns/org#Organization&gt; ;
+    owl:inverseOf tbox:providesService .
+</code></pre>
+<hr />
+<p>Think: We have gathered more information about German companies and services offered by companies. We can now use this information to construct a query.</p>
+<p>Act: query('PREFIX : <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX rdfs: <a href="http://www.w3.org/2000/01/rdf-schema#">http://www.w3.org/2000/01/rdf-schema#</a> SELECT DISTINCT ?service ?company WHERE { ?service a <a href="https://welektronik.iis.fraunhofer.de/entity/Q293">https://welektronik.iis.fraunhofer.de/entity/Q293</a> . ?service :serviceProvidedBy ?company . ?company :locatedIn <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this</a> . }')</p>
+<hr />
+<p>No results for <code>query('PREFIX : &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; SELECT DISTINCT ?service ?company WHERE { ?service a &lt;https://welektronik.iis.fraunhofer.de/entity/Q293&gt; . ?service :serviceProvidedBy ?company . ?company :locatedIn &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this&gt; . }')</code>.</p>
+<hr />
+<p>Think: The query did not return any results. This could be due to the fact that the property <code>:locatedIn</code> is not defined in the knowledge graph. We need to find an alternative way to link companies to their location.</p>
+<p>Act: deref('https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#providesService') | search('location of companies')</p>
+<hr />
+<p>The description of <code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#providesService</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+tbox:providesService a owl:ObjectProperty ;
+    rdfs:label "provides service"@en ;
+    rdfs:domain &lt;https://www.w3.org/ns/org#Organization&gt; ;
+    rdfs:range &lt;https://welektronik.iis.fraunhofer.de/entity/Q293&gt; ;
+    owl:inverseOf tbox:serviceProvidedBy .
+</code></pre>
+<hr />
+<p>The keyword search for <code>location of companies</code> returned the following ranked list with hits.</p>
+<pre><code>https://dblp.org/rdf/schema#yearOfPublication **year of publication** 0.3257
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationTypeOf **organization type of** 0.3182
+https://dblp.org/rdf/schema#Creator **Publication** 0.2957
+https://dblp.org/rdf/schema#Publication **Publication** 0.2957
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/person/wdQ84747997.ttl#conf-iccad-NguyenDS98 **Simulation of coupling capacitances using matrix partitioning.** 0.2935
+</code></pre>
+<hr />
+<p>Think: Unfortunately, the search for <code>location of companies</code> did not return any relevant results. We have to give up as we are running out of options.</p>
+<p>Act: fail('Unfortunately, we were unable to find the required information about services offered by German companies.')</p>
+<p>{'loop': {'id': '67c0a043', 'question': 'Services offered by German companies', 'iterations': 5, 'state': <State.FAIL: 'FAIL'>, 'sparql': 'PREFIX : <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX rdfs: <a href="http://www.w3.org/2000/01/rdf-schema#">http://www.w3.org/2000/01/rdf-schema#</a> SELECT DISTINCT ?service ?company WHERE { ?service a <a href="https://welektronik.iis.fraunhofer.de/entity/Q293">https://welektronik.iis.fraunhofer.de/entity/Q293</a> . ?service :serviceProvidedBy ?company . ?company :locatedIn <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this</a> . }', 'elapsed_time': 43919}, 'tokens': {'prompt_tokens': 11278, 'completion_tokens': 531, 'elapsed_time_model': 31141, 'tokens_per_sec': 379.20389874656513}, 'git': {'label': 'v0.2.8-79-g9b6f0bcd', 'commit': '9b6f0bcd1d005074f643fdb14a359bcef6a0438a'}, 'sources': ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}</p>

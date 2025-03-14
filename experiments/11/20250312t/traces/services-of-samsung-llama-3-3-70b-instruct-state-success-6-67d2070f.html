@@ -1,0 +1,150 @@
+<p>Task</p>
+<p>You are Graf von Data, an assistant designed to formulate a query based on input from User.</p>
+<p>Process</p>
+<p>You interact with a knowledge graph in a strict think-act-observe cycle.</p>
+<ol>
+<li>Think: Analyse the question from User and the descriptions in the representations gathered so far.</li>
+<li>Act: Choose available actions (listed below) that will best progress towards formulating the query.</li>
+<li>Observe: HALT. System will provide the result of your chosen actions in the next cycle.</li>
+</ol>
+<p>In your response, start with a <code>Think:</code> section followed by an <code>Act:</code> section.</p>
+<p>Actions</p>
+<p>You can issue one or multiple of the following actions.</p>
+<ul>
+<li><code>search(keywords: string)</code>: Get URIs to resources matching the given <code>keywords</code>. Look for URIs that identify entities, i.e., make two calls: <code>search('foo')</code> and <code>search('bar')</code> instead of <code>search('foo bar')</code>.</li>
+<li><code>deref(resource URI: string)</code>: Get all triples with <code>resource URI</code> in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with <code>deref()</code>.</li>
+<li><code>query(sparql: string)</code>: Evaluate <code>sparql</code> and get solutions. Consider using path expressions, i.e., <code>*</code> or <code>+</code> for paths of transitive properties and <code>|</code> for alternative paths.</li>
+</ul>
+<p>You issue run actions concurrently using <code>|</code>, e.g., <code>search('foo') | search('bar')</code>.
+Format action calls as follows: <code>Act: describe('http://foo/bar')</code> or <code>Act: query('PREFIX : &lt;#&gt; SELECT DISTINCT ?x WHERE { ... }')</code>.
+Use quotes for arguments.</p>
+<p>Chat</p>
+<p>Sometimes User does not seek factual information.</p>
+<ul>
+<li><code>chat(text: string)</code>: Issue a <code>chat()</code> action if User does not seek factual information from the knowledge graph.</li>
+</ul>
+<p>Conditions</p>
+<p>Once you have come up with the final query, check the query via <code>query()</code> and then end.</p>
+<ul>
+<li><code>success(text: string)</code>: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.</li>
+</ul>
+<p>If nearing about ten cycles:</p>
+<ul>
+<li><code>fail(text: string)</code>: You have no other choice than to give up. Optionally report to User the relevant steps you tried.</li>
+</ul>
+<p>Stages</p>
+<ul>
+<li>Identify key resources in the User question and find URIs via <code>Act: search()</code>.</li>
+<li>Next, dereference key resources via <code>Act: deref()</code>.
+Iteratively expand your knowledge about the graph via <code>Act: deref()</code> to gather information required to construct the query.
+Consider obtaining information about classes and properties via <code>Act: deref()</code>, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.</li>
+<li>Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.</li>
+</ul>
+<p>Critical Instructions</p>
+<ul>
+<li>Ensure that all URIs used in the query exist in the knowledge graph.</li>
+<li>Only use URIs that have been previously mentioned or discovered via <code>search()</code> or <code>deref()</code>.</li>
+<li>Never repeat successfully executed actions, the results will be the same.</li>
+</ul>
+<hr />
+<p>System has access to ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'] with 32346 triples. System version v0.2.8-93-gfa87822d is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.</p>
+<hr />
+<p>Services of Samsung</p>
+<hr />
+<p>Think: The user is asking about the services provided by Samsung. To formulate a query, we need to identify the key resources related to Samsung and its services. We can start by searching for URIs that match the keyword "Samsung" and then explore the related resources to gather more information.</p>
+<p>Act: search('Samsung') | deref('http://www.wikidata.org/entity/Q181')</p>
+<hr />
+<p>The keyword search for <code>Samsung</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ389.ttl#this **['Samsung Fab Giheung']** 0.7333
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ390.ttl#this **['Samsung Fab Hwaseong']** 0.6804
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ394.ttl#this **["Samsung Fab Xi'an"]** 0.6118
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ392.ttl#this **['Samsung Fab Austin']** 0.5963
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ393.ttl#this **['Samsung Assembly/Test Onyang']** 0.5893
+</code></pre>
+<hr />
+<p>No results for <code>deref('http://www.wikidata.org/entity/Q181')</code>.</p>
+<hr />
+<p>Think: The search results for "Samsung" returned several URIs related to Samsung's fabrication and assembly sites. However, these results do not provide information about the services offered by Samsung. We need to explore other resources to gather more information about Samsung's services.</p>
+<p>Act: search('Samsung services') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ389.ttl#this')</p>
+<hr />
+<p>The keyword search for <code>Samsung services</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ389.ttl#this **['Samsung Fab Giheung']** 0.4714
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this **['Samsung Electronics']** 0.4629
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ390.ttl#this **['Samsung Fab Hwaseong']** 0.4330
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ394.ttl#this **["Samsung Fab Xi'an"]** 0.4326
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ392.ttl#this **['Samsung Fab Austin']** 0.4216
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ389.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ389.ttl#this&gt; a ns1:Feature,
+        &lt;https://www.w3.org/ns/org#Site&gt; ;
+    rdfs:label "Samsung Fab Giheung"@en ;
+    ns1:featureClass ns1:S ;
+    ns1:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ50360.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q297&gt; .
+</code></pre>
+<hr />
+<p>Think: The search results for "Samsung services" did not return any relevant information about the services offered by Samsung. The dereferenced resource <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ389.ttl#this</code> is related to Samsung's fabrication site in Giheung, but it does not provide information about services. We need to explore other resources to gather more information about Samsung's services.</p>
+<p>Act: search('Samsung Electronics') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this')</p>
+<hr />
+<p>The keyword search for <code>Samsung Electronics</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this **['Samsung Electronics']** 1.0000
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ628.ttl#this **['Samsung Electronics Suzhou Fab']** 0.7715
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ140.ttl#this **['Hanking Electronics']** 0.6667
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ914.ttl#this **['AOI Electronics']** 0.6351
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ719.ttl#this **['Arrow Electronics']** 0.6008
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this&gt; a owl:Thing,
+        &lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise&gt;,
+        ns1:Organization ;
+    rdfs:label "Samsung Electronics"@en ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q20718&gt;,
+        &lt;https://welektronik.iis.fraunhofer.de/entity/Q36&gt; ;
+    tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q285&gt; ;
+    tbox:providesService &lt;https://welektronik.iis.fraunhofer.de/entity/Q291&gt; ;
+    tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; ;
+    ns1:hasRegisteredSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#headquarter&gt; ;
+    ns1:hasSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ389.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ390.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ391.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ392.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ393.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ394.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ628.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>Think: The search results for "Samsung Electronics" returned a relevant resource <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this</code> that provides information about Samsung Electronics. The dereferenced resource shows that Samsung Electronics is an organization that provides a service <code>https://welektronik.iis.fraunhofer.de/entity/Q291</code>. We can use this information to construct a query to retrieve more information about the services provided by Samsung Electronics.</p>
+<p>Act: query('PREFIX : <a href="https://welektronik.iis.fraunhofer.de/entity/">https://welektronik.iis.fraunhofer.de/entity/</a> PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT DISTINCT ?service WHERE { <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this</a> tbox:providesService ?service }')</p>
+<hr />
+<p>The query 'PREFIX : <a href="https://welektronik.iis.fraunhofer.de/entity/">https://welektronik.iis.fraunhofer.de/entity/</a> PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT DISTINCT ?service WHERE { <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this</a> tbox:providesService ?service }' returned the following solution.</p>
+<pre><code>service
+https://welektronik.iis.fraunhofer.de/entity/Q291
+</code></pre>
+<hr />
+<p>Think: The query returned a solution that shows Samsung Electronics provides a service <code>https://welektronik.iis.fraunhofer.de/entity/Q291</code>. However, this service is not explicitly defined in the knowledge graph. We need to explore more resources to gather more information about this service.</p>
+<p>Act: deref('https://welektronik.iis.fraunhofer.de/entity/Q291')</p>
+<hr />
+<p>The description of <code>https://welektronik.iis.fraunhofer.de/entity/Q291</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q291&gt; a &lt;https://welektronik.iis.fraunhofer.de/entity/Q293&gt; ;
+    rdfs:label "Foundry Service"@en ;
+    rdfs:comment "Producing semiconductors for others."@en .
+</code></pre>
+<hr />
+<p>Think: The dereferenced resource <code>https://welektronik.iis.fraunhofer.de/entity/Q291</code> provides information about the service offered by Samsung Electronics. The service is a foundry service, which means producing semiconductors for others. We have gathered enough information to construct a final query to retrieve the services provided by Samsung Electronics.</p>
+<p>Act: success('The final answer is that Samsung Electronics provides a foundry service, which means producing semiconductors for others.')</p>
+<p>{'loop': {'id': '67d2070f', 'question': 'Services of Samsung', 'iterations': 6, 'state': <State.SUCCESS: 'SUCCESS'>, 'sparql': 'PREFIX : <a href="https://welektronik.iis.fraunhofer.de/entity/">https://welektronik.iis.fraunhofer.de/entity/</a> PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> SELECT DISTINCT ?service WHERE { <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this</a> tbox:providesService ?service }', 'elapsed_time': 54915}, 'tokens': {'prompt_tokens': 13770, 'completion_tokens': 748, 'elapsed_time_model': 48833, 'tokens_per_sec': 297.29834547279455}, 'git': {'label': 'v0.2.8-93-gfa87822d', 'commit': 'fa87822d9e4dc7607312373ccc8fbd8675364b05'}, 'sources': ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}</p>

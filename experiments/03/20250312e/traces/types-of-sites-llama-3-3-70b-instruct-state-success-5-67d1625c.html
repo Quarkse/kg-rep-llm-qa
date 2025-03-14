@@ -1,0 +1,183 @@
+<p>Task</p>
+<p>You are Graf von Data, an assistant designed to formulate a query based on input from User.</p>
+<p>Process</p>
+<p>You interact with a knowledge graph in a strict think-act-observe cycle.</p>
+<ol>
+<li>Think: Analyse the question from User and the descriptions in the representations gathered so far.</li>
+<li>Act: Choose available actions (listed below) that will best progress towards formulating the query.</li>
+<li>Observe: HALT. System will provide the result of your chosen actions in the next cycle.</li>
+</ol>
+<p>In your response, start with a <code>Think:</code> section followed by an <code>Act:</code> section.</p>
+<p>Actions</p>
+<p>You can issue one or multiple of the following actions.</p>
+<ul>
+<li><code>search(keywords: string)</code>: Get URIs to resources matching the given <code>keywords</code>. Look for URIs that identify entities, i.e., make two calls: <code>search('foo')</code> and <code>search('bar')</code> instead of <code>search('foo bar')</code>.</li>
+<li><code>deref(resource URI: string)</code>: Get all triples with <code>resource URI</code> in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with <code>deref()</code>.</li>
+<li><code>query(sparql: string)</code>: Evaluate <code>sparql</code> and get solutions. Consider using path expressions, i.e., <code>*</code> or <code>+</code> for paths of transitive properties and <code>|</code> for alternative paths.</li>
+</ul>
+<p>You issue run actions concurrently using <code>|</code>, e.g., <code>search('foo') | search('bar')</code>.
+Format action calls as follows: <code>Act: describe('http://foo/bar')</code> or <code>Act: query('PREFIX : &lt;#&gt; SELECT DISTINCT ?x WHERE { ... }')</code>.
+Use quotes for arguments.</p>
+<p>Chat</p>
+<p>Sometimes User does not seek factual information.</p>
+<ul>
+<li><code>chat(text: string)</code>: Issue a <code>chat()</code> action if User does not seek factual information from the knowledge graph.</li>
+</ul>
+<p>Conditions</p>
+<p>Once you have come up with the final query, check the query via <code>query()</code> and then end.</p>
+<ul>
+<li><code>success(text: string)</code>: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.</li>
+</ul>
+<p>If nearing about ten cycles:</p>
+<ul>
+<li><code>fail(text: string)</code>: You have no other choice than to give up. Optionally report to User the relevant steps you tried.</li>
+</ul>
+<p>Stages</p>
+<ul>
+<li>Identify key resources in the User question and find URIs via <code>Act: search()</code>.</li>
+<li>Next, dereference key resources via <code>Act: deref()</code>.
+Iteratively expand your knowledge about the graph via <code>Act: deref()</code> to gather information required to construct the query.
+Consider obtaining information about classes and properties via <code>Act: deref()</code>, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.</li>
+<li>Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.</li>
+</ul>
+<p>Critical Instructions</p>
+<ul>
+<li>Ensure that all URIs used in the query exist in the knowledge graph.</li>
+<li>Only use URIs that have been previously mentioned or discovered via <code>search()</code> or <code>deref()</code>.</li>
+<li>Never repeat successfully executed actions, the results will be the same.</li>
+</ul>
+<hr />
+<p>System has access to ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'] with 32276 triples. System version v0.2.8-91-g5e507554 is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.</p>
+<hr />
+<p>Types of sites</p>
+<hr />
+<p>Think: The user is asking about types of sites, which could refer to various categories such as websites, archaeological sites, construction sites, or other types of locations. To better understand the user's query, I need to gather more information about the context and scope of the question.</p>
+<p>Act: search('types of websites') | search('types of archaeological sites') | search('types of construction sites')</p>
+<hr />
+<p>The keyword search for <code>types of websites</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#this **Nepes** 0.3563
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#siteType **site type** 0.3553
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#SiteType **Site type** 0.3553
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ30.ttl#this **United States of America** 0.3236
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ5110386.ttl#this **Tampines** 0.2981
+</code></pre>
+<hr />
+<p>The keyword search for <code>types of archaeological sites</code> returned the following ranked list with hits.</p>
+<pre><code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#siteType **site type** 0.3198
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#SiteType **Site type** 0.3198
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ30.ttl#this **United States of America** 0.3120
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#this **Nepes** 0.2673
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ159.ttl#this **NMB Technologies** 0.2500
+</code></pre>
+<hr />
+<p>The keyword search for <code>types of construction sites</code> returned the following ranked list with hits.</p>
+<pre><code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#siteType **site type** 0.3303
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#SiteType **Site type** 0.3303
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#this **Nepes** 0.2760
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ705.ttl#this **Silicon Motion** 0.2582
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#organizationType **organization type** 0.2513
+</code></pre>
+<hr />
+<p>Think: The search results for the different types of sites have returned some relevant information, including the concept of "site type" and various companies and regions. However, the results are not very specific and do not provide a clear answer to the user's question. To better understand the types of sites, I need to gather more information about the properties and relationships of the concepts related to sites.</p>
+<p>Act: deref('https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#siteType') | deref('https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#SiteType') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#this')</p>
+<hr />
+<p>The description of <code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#siteType</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+tbox:SiteType a rdfs:Class ;
+    rdfs:label "Site type"@en .
+
+&lt;https://www.w3.org/ns/org#Site&gt; a rdfs:Class ;
+    rdfs:label "Site"@en .
+
+tbox:siteType a owl:ObjectProperty ;
+    rdfs:label "site type"@en ;
+    rdfs:domain &lt;https://www.w3.org/ns/org#Site&gt; ;
+    rdfs:range tbox:SiteType .
+</code></pre>
+<hr />
+<p>The description of <code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#SiteType</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+tbox:SiteType a rdfs:Class ;
+    rdfs:label "Site type"@en ;
+    rdfs:subClassOf skos:Concept .
+
+&lt;https://www.w3.org/ns/org#Site&gt; a rdfs:Class ;
+    rdfs:label "Site"@en .
+
+tbox:siteType a owl:ObjectProperty ;
+    rdfs:label "site type"@en ;
+    rdfs:domain &lt;https://www.w3.org/ns/org#Site&gt; ;
+    rdfs:range tbox:SiteType .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#this&gt; a owl:Thing,
+        &lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise&gt;,
+        ns1:Organization ;
+    rdfs:label "Nepes"@en ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q117263076&gt;,
+        &lt;https://welektronik.iis.fraunhofer.de/entity/Q906&gt; ;
+    tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q879&gt; ;
+    tbox:providesService &lt;https://welektronik.iis.fraunhofer.de/entity/Q289&gt;,
+        &lt;https://welektronik.iis.fraunhofer.de/entity/Q290&gt; ;
+    ns1:hasRegisteredSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ906.ttl#headquarter&gt; ;
+    ns1:hasSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ976.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ977.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ978.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ979.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>Think: The descriptions of the concepts related to sites have provided more information about the properties and relationships of these concepts. The concept of "site type" is a class that has a label "Site type" and is a subclass of "skos:Concept". The concept of "site" is a class that has a label "Site" and is related to the concept of "site type" through the property "siteType". The company "Nepes" is an instance of the class "Organization" and has several sites. To answer the user's question, I need to gather more information about the different types of sites.</p>
+<p>Act: query('PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX skos: <a href="http://www.w3.org/2004/02/skos/core#">http://www.w3.org/2004/02/skos/core#</a> SELECT DISTINCT ?siteType WHERE { ?site a <a href="https://www.w3.org/ns/org#Site">https://www.w3.org/ns/org#Site</a> . ?site tbox:siteType ?siteType . }')</p>
+<hr />
+<p>The query 'PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX skos: <a href="http://www.w3.org/2004/02/skos/core#">http://www.w3.org/2004/02/skos/core#</a> SELECT DISTINCT ?siteType WHERE { ?site a <a href="https://www.w3.org/ns/org#Site">https://www.w3.org/ns/org#Site</a> . ?site tbox:siteType ?siteType . }' returned the following solution.</p>
+<pre><code>siteType
+https://welektronik.iis.fraunhofer.de/entity/Q298
+https://welektronik.iis.fraunhofer.de/entity/Q1180
+https://welektronik.iis.fraunhofer.de/entity/Q297
+</code></pre>
+<hr />
+<p>Think: The query has returned some results, which are the different types of sites. However, the results are not very informative and do not provide a clear answer to the user's question. To better understand the results, I need to gather more information about the concepts related to the types of sites.</p>
+<p>Act: deref('https://welektronik.iis.fraunhofer.de/entity/Q298') | deref('https://welektronik.iis.fraunhofer.de/entity/Q1180') | deref('https://welektronik.iis.fraunhofer.de/entity/Q297')</p>
+<hr />
+<p>The description of <code>https://welektronik.iis.fraunhofer.de/entity/Q298</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q298&gt; a tbox:SiteType ;
+    rdfs:label "Assembly/Test facility"@en .
+</code></pre>
+<hr />
+<p>The description of <code>https://welektronik.iis.fraunhofer.de/entity/Q1180</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q1180&gt; a tbox:SiteType ;
+    rdfs:label "Material fab"@en .
+</code></pre>
+<hr />
+<p>The description of <code>https://welektronik.iis.fraunhofer.de/entity/Q297</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q297&gt; a tbox:SiteType ;
+    rdfs:label "Chip fab"@en .
+</code></pre>
+<hr />
+<p>Think: The descriptions of the types of sites have provided more information about the concepts related to the types of sites. The types of sites include "Assembly/Test facility", "Material fab", and "Chip fab". To answer the user's question, I can now provide a clear and concise answer.</p>
+<p>Act: success('The types of sites include Assembly/Test facility, Material fab, and Chip fab.')</p>
+<p>{'loop': {'id': '67d1625c', 'question': 'Types of sites', 'iterations': 5, 'state': <State.SUCCESS: 'SUCCESS'>, 'sparql': 'PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX skos: <a href="http://www.w3.org/2004/02/skos/core#">http://www.w3.org/2004/02/skos/core#</a> SELECT DISTINCT ?siteType WHERE { ?site a <a href="https://www.w3.org/ns/org#Site">https://www.w3.org/ns/org#Site</a> . ?site tbox:siteType ?siteType . }', 'elapsed_time': 61220}, 'tokens': {'prompt_tokens': 12731, 'completion_tokens': 719, 'elapsed_time_model': 48976, 'tokens_per_sec': 274.6241716977452}, 'git': {'label': 'v0.2.8-91-g5e507554', 'commit': '5e507554e7591bf3e1500b8f32ab0205253aa1ca'}, 'sources': ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}</p>

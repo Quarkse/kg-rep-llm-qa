@@ -1,0 +1,130 @@
+<p>Task</p>
+<p>You are Graf von Data, an assistant designed to formulate a query based on input from User.</p>
+<p>Process</p>
+<p>You interact with a knowledge graph in a strict think-act-observe cycle.</p>
+<ol>
+<li>Think: Analyse the question from User and the descriptions in the representations gathered so far.</li>
+<li>Act: Choose available actions (listed below) that will best progress towards formulating the query.</li>
+<li>Observe: HALT. System will provide the result of your chosen actions in the next cycle.</li>
+</ol>
+<p>In your response, start with a <code>Think:</code> section followed by an <code>Act:</code> section.</p>
+<p>Actions</p>
+<p>You can issue one or multiple of the following actions.</p>
+<ul>
+<li><code>search(keywords: string)</code>: Get URIs to resources matching the given <code>keywords</code>. Look for URIs that identify entities, i.e., make two calls: <code>search('foo')</code> and <code>search('bar')</code> instead of <code>search('foo bar')</code>.</li>
+<li><code>deref(resource URI: string)</code>: Get all triples with <code>resource URI</code> in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with <code>deref()</code>.</li>
+<li><code>query(sparql: string)</code>: Evaluate <code>sparql</code> and get solutions. Consider using path expressions, i.e., <code>*</code> or <code>+</code> for paths of transitive properties and <code>|</code> for alternative paths.</li>
+</ul>
+<p>You issue run actions concurrently using <code>|</code>, e.g., <code>search('foo') | search('bar')</code>.
+Format action calls as follows: <code>Act: describe('http://foo/bar')</code> or <code>Act: query('PREFIX : &lt;#&gt; SELECT DISTINCT ?x WHERE { ... }')</code>.
+Use quotes for arguments.</p>
+<p>Chat</p>
+<p>Sometimes User does not seek factual information.</p>
+<ul>
+<li><code>chat(text: string)</code>: Issue a <code>chat()</code> action if User does not seek factual information from the knowledge graph.</li>
+</ul>
+<p>Conditions</p>
+<p>Once you have come up with the final query, check the query via <code>query()</code> and then end.</p>
+<ul>
+<li><code>success(text: string)</code>: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.</li>
+</ul>
+<p>If nearing about ten cycles:</p>
+<ul>
+<li><code>fail(text: string)</code>: You have no other choice than to give up. Optionally report to User the relevant steps you tried.</li>
+</ul>
+<p>Stages</p>
+<ul>
+<li>Identify key resources in the User question and find URIs via <code>Act: search()</code>.</li>
+<li>Next, dereference key resources via <code>Act: deref()</code>.
+Iteratively expand your knowledge about the graph via <code>Act: deref()</code> to gather information required to construct the query.
+Consider obtaining information about classes and properties via <code>Act: deref()</code>, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.</li>
+<li>Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.</li>
+</ul>
+<p>Critical Instructions</p>
+<ul>
+<li>Ensure that all URIs used in the query exist in the knowledge graph.</li>
+<li>Only use URIs that have been previously mentioned or discovered via <code>search()</code> or <code>deref()</code>.</li>
+<li>Never repeat successfully executed actions, the results will be the same.</li>
+</ul>
+<hr />
+<p>System has access to ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'] with 32276 triples. System version v0.2.8-91-g5e507554 is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.</p>
+<hr />
+<p>Fabless suppliers of TSMC</p>
+<hr />
+<p>Think: The user is asking about fabless suppliers of TSMC, which refers to companies that design and sell semiconductor chips but outsource the manufacturing to a foundry like TSMC. To formulate a query, we need to identify the key resources involved, such as TSMC and fabless suppliers.</p>
+<p>Act: search('TSMC') | search('fabless supplier') | search('semiconductor company')</p>
+<hr />
+<p>The keyword search for <code>TSMC</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ127.ttl#this **HLMC** 0.4082
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ13892.ttl#this **Tarlac** 0.3536
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ253.ttl#this **Tsinghua Unigroup** 0.2294
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ67.ttl#this **TDK** 0.2236
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ154.ttl#this **DDC** 0.2236
+</code></pre>
+<hr />
+<p>The keyword search for <code>fabless supplier</code> returned the following ranked list with hits.</p>
+<pre><code>https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#supplier **supplier** 0.6708
+https://welektronik.iis.fraunhofer.de/entity/Q286 **Fabless** 0.6285
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1165.ttl#this **MSE Supplies** 0.3780
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ6441.ttl#this **Montpellier** 0.2615
+https://purl.org/supply-network/onto#SupplyFlow **Supply Flow** 0.2615
+</code></pre>
+<hr />
+<p>The keyword search for <code>semiconductor company</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this **Taiwan Semiconductor Manufacturing Company** 0.6601
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ134.ttl#this **Seoul Semiconductor** 0.6522
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ727.ttl#this **GCT Semiconductor** 0.6219
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ82.ttl#this **AKM Semiconductor** 0.6219
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ252.ttl#this **GTA Semiconductor** 0.6219
+</code></pre>
+<hr />
+<p>Think: We have identified some key resources related to TSMC and fabless suppliers. The search results for <code>TSMC</code> include a company named <code>Taiwan Semiconductor Manufacturing Company</code>, which is likely the TSMC we are looking for. The search results for <code>fabless supplier</code> include a concept named <code>Fabless</code>, which is relevant to our query. The search results for <code>semiconductor company</code> include several companies, but none of them are explicitly mentioned as fabless suppliers of TSMC.</p>
+<p>Act: deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this') | deref('https://welektronik.iis.fraunhofer.de/entity/Q286')</p>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this</code> is as follows.</p>
+<pre><code>@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
+@prefix ns1: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this&gt; a owl:Thing,
+        &lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise&gt;,
+        ns1:Organization ;
+    rdfs:label "Taiwan Semiconductor Manufacturing Company"@en ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q713418&gt;,
+        &lt;https://welektronik.iis.fraunhofer.de/entity/Q20&gt; ;
+    foaf:homepage &lt;https://www.tsmc.com/&gt; ;
+    tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q287&gt; ;
+    tbox:providesService &lt;https://welektronik.iis.fraunhofer.de/entity/Q289&gt;,
+        &lt;https://welektronik.iis.fraunhofer.de/entity/Q290&gt;,
+        &lt;https://welektronik.iis.fraunhofer.de/entity/Q291&gt; ;
+    tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; ;
+    ns1:hasRegisteredSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#headquarter&gt; ;
+    ns1:hasSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ547.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ659.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ660.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ661.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ662.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ663.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ664.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://welektronik.iis.fraunhofer.de/entity/Q286</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q286&gt; a tbox:OrganizationType ;
+    rdfs:label "Fabless"@en .
+</code></pre>
+<hr />
+<p>Think: We have retrieved the descriptions of <code>Taiwan Semiconductor Manufacturing Company</code> and <code>Fabless</code>. The description of <code>Taiwan Semiconductor Manufacturing Company</code> includes its organization type, which is not <code>Fabless</code>. However, this does not necessarily mean that it does not work with fabless suppliers. The description of <code>Fabless</code> only includes its label, which does not provide any additional information.</p>
+<p>Act: query('PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX ns1: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?x WHERE { ?x a ns1:Organization . ?x tbox:organizationType <a href="https://welektronik.iis.fraunhofer.de/entity/Q286">https://welektronik.iis.fraunhofer.de/entity/Q286</a> . ?x ns1:hasRegisteredSite ?y . ?y ns1:hasSite <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#headquarter">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#headquarter</a> }')</p>
+<hr />
+<p>No results for <code>query('PREFIX tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; PREFIX ns1: &lt;https://www.w3.org/ns/org#&gt; SELECT DISTINCT ?x WHERE { ?x a ns1:Organization . ?x tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q286&gt; . ?x ns1:hasRegisteredSite ?y . ?y ns1:hasSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#headquarter&gt; }')</code>.</p>
+<hr />
+<p>Think: The query did not return any results, which means that there are no organizations in the knowledge graph that are of type <code>Fabless</code> and have a registered site that is also a site of <code>Taiwan Semiconductor Manufacturing Company</code>. This does not necessarily mean that <code>Taiwan Semiconductor Manufacturing Company</code> does not work with fabless suppliers, but rather that this information is not present in the knowledge graph.</p>
+<p>Act: fail('Unable to find fabless suppliers of TSMC in the knowledge graph.')</p>
+<p>{'loop': {'id': '67d16881', 'question': 'Fabless suppliers of TSMC', 'iterations': 4, 'state': <State.FAIL: 'FAIL'>, 'sparql': 'PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX ns1: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?x WHERE { ?x a ns1:Organization . ?x tbox:organizationType <a href="https://welektronik.iis.fraunhofer.de/entity/Q286">https://welektronik.iis.fraunhofer.de/entity/Q286</a> . ?x ns1:hasRegisteredSite ?y . ?y ns1:hasSite <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#headquarter">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#headquarter</a> }', 'elapsed_time': 44651}, 'tokens': {'prompt_tokens': 8325, 'completion_tokens': 607, 'elapsed_time_model': 35739, 'tokens_per_sec': 249.92026337437315}, 'git': {'label': 'v0.2.8-91-g5e507554', 'commit': '5e507554e7591bf3e1500b8f32ab0205253aa1ca'}, 'sources': ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}</p>

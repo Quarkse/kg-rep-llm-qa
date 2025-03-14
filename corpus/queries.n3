@@ -1,0 +1,573 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix we: <https://welektronik.iis.fraunhofer.de/entity/> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+@prefix org: <https://www.w3.org/ns/org#> .
+@prefix dblp: <https://dblp.org/rdf/schema#> .
+@prefix geonames: <http://www.geonames.org/ontology#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix esn: <https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#> .
+@prefix tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> .
+@prefix : <#> .
+
+
+###########################################################################
+# one triple pattern
+###########################################################################
+
+[] rdfs:label "IDMs"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+?x tbox:organizationType we:Q285 .
+} .
+
+[] rdfs:label "Fabless companies"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+?x tbox:organizationType we:Q286 .
+} .
+
+[] rdfs:label "Potential services of companies"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+?x rdf:type we:Q293 .
+} .
+
+[] rdfs:label "Assembly/test sites"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+?x tbox:siteType we:Q298 .
+} .
+
+[] rdfs:label "Chip fabs"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+?x tbox:siteType we:Q297 .
+} .
+
+[] rdfs:label "Types of companies"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+?x rdf:type tbox:OrganizationType .
+} .
+
+[] rdfs:label "Types of sites"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+?x rdf:type tbox:SiteType .
+} .
+
+[] rdfs:label "Companies offering design services"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+?x tbox:providesService we:Q288 .
+} .
+
+[] rdfs:label "Small companies"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+?x tbox:size we:Q1046 .
+} .
+
+[] rdfs:label "Company type of ASML"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+<https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1029.ttl#this> tbox:organizationType ?x .
+} .
+
+[] rdfs:label "Sites of Intel"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+<https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> org:hasSite ?x .
+} .
+
+[] rdfs:label "Services of Samsung"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+<https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this> tbox:providesService ?x .
+} .
+
+[] rdfs:label "Size of Siltronic"@en ;
+dc:subject "one triple pattern" ;
+rdf:value 
+{
+<https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1042.ttl#this> tbox:size ?x .
+} .
+
+[] rdfs:label "Publications of Pat Gelsinger"@en ;
+dc:subject "one triple pattern" ;
+rdf:value
+{
+<https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/person/wdQ7143480.ttl#this> dblp:authorOf ?x .
+} .
+
+
+###########################################################################
+# two triple patterns
+###########################################################################
+
+
+[] rdfs:label "Suppliers of Siltronic"@en ;
+dc:subject "two triple patterns" ;
+dc:subject "supply" ;
+rdf:value
+{
+_:c esn:customer <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1042.ttl#this> .
+_:c esn:supplier ?x .
+} .
+
+[] rdfs:label "Customers of ASML"@en ;
+dc:subject "two triple patterns" ;
+dc:subject "supply" ;
+rdf:value 
+{
+_:c esn:customer ?x . 
+_:c esn:supplier <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1029.ttl#this> .
+} .
+
+[] rdfs:label "Intel's capex"@en ;
+dc:subject "two triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+?x tbox:observedEnterprise <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> .
+?x tbox:capex _:y .
+} .
+
+[] rdfs:label "Intel's net profit"@en ;
+dc:subject "two triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+?x tbox:observedEnterprise <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> .
+?x tbox:netProfit _:y .
+} .
+
+[] rdfs:label "Assembly/test sites of Intel"@en ;
+dc:subject "two triple patterns" ;
+rdf:value
+{
+<https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> org:hasSite ?x .
+?x tbox:siteType we:Q298 .
+} .
+
+[] rdfs:label "Companies from Nuremberg"@en ;
+dc:subject "two triple patterns" ;
+dc:subject "geo" ;
+rdf:value
+{
+?x org:hasRegisteredSite _:y .
+_:y geonames:parentFeature <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ2090.ttl#this> .
+} .
+
+[] rdfs:label "City TSMC has its headquarter in"@en ;
+dc:subject "two triple patterns" ;
+dc:subject "geo" ;
+rdf:value
+{
+<https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this> org:hasRegisteredSite _:y .
+_:y geonames:parentFeature ?x .
+} .
+
+[] rdfs:label "Companies with sites in Nuremberg"@en ;
+dc:subject "two triple patterns" ;
+dc:subject "geo" ;
+rdf:value
+{
+?x org:hasSite _:y .
+_:y geonames:parentFeature <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ2090.ttl#this> .
+} .
+
+[] rdfs:label "Cities that Intel has sites in"@en ;
+dc:subject "two triple patterns" ;
+dc:subject "geo" ;
+rdf:value
+{
+<https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> org:hasSite _:y .
+_:y geonames:parentFeature ?x .
+} .
+
+[] rdfs:label "Small fabless companies"@en ;
+dc:subject "two triple patterns" ;
+rdf:value
+{
+?x tbox:size we:Q1046 .
+?x tbox:organizationType we:Q286 .
+} .
+
+[] rdfs:label "People with publications"@en ;
+dc:subject "two triple patterns" ;
+rdf:value
+{
+?x rdf:type foaf:Person .
+?x dblp:authorOf _:z .
+} .
+
+[] rdfs:label "Publications of Pat Gelsinger in 2005"@en ;
+dc:subject "two triple patterns" ;
+rdf:value
+{
+<https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/person/wdQ7143480.ttl#this> dblp:authorOf ?x  .
+?x dblp:yearOfPublication "2005"^^xsd:gYear .
+} .
+
+[] rdfs:label "German companies"@en ;
+dc:subject "two triple patterns" ;
+dc:subject "geo" ;
+rdfs:comment "the number of geonames:parentFeature hops from the various sites to Germany is not fixed" ;
+rdf:value
+{
+?x org:hasRegisteredSite _:y .
+_:y geonames:parentFeature__plus <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this> .
+} .
+
+[] rdfs:label "Companies with sites in Ireland"@en ;
+dc:subject "two triple patterns" ;
+dc:subject "geo" ;
+rdfs:comment "the number of geonames:parentFeature hops from the various sites to Ireland is not fixed" ;
+rdf:value
+{
+?x org:hasSite _:y .
+_:y geonames:parentFeature__plus <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ27.ttl#this> .
+} .
+
+
+###########################################################################
+# three triple patterns
+###########################################################################
+
+
+[] rdfs:label "Large suppliers of TSMC"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "supply" ;
+rdf:value
+{
+_:c esn:customer <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this> . 
+_:c esn:supplier ?x .
+?x tbox:size we:Q1048 .
+} .
+
+[] rdfs:label "Fabless customers of TSMC"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "supply" ;
+rdf:value
+{
+_:c esn:customer ?x . 
+_:c esn:supplier <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this> .
+?x tbox:organizationType we:Q286 .
+} .
+
+[] rdfs:label "Suppliers of TSMC that offer design services"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "supply" ;
+rdf:value
+{
+_:c esn:customer <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this> . 
+_:c esn:supplier ?x .
+?x tbox:providesService we:Q288 .
+} .
+
+[] rdfs:label "Customers of TSMC that offer design services"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "supply" ;
+rdf:value
+{
+_:c esn:customer ?x . 
+_:c esn:supplier <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this> .
+?x tbox:providesService we:Q288 .
+} .
+
+[] rdfs:label "Large customers of TSMC"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "supply" ;
+rdf:value
+{
+_:c esn:customer ?x . 
+_:c esn:supplier <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this> .
+?x tbox:size we:Q1048 .
+} .
+
+[] rdfs:label "Fabless suppliers of TSMC"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "supply" ;
+rdf:value
+{
+_:c esn:customer <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this> . 
+_:c esn:supplier ?x .
+?x tbox:organizationType we:Q286 .
+} .
+
+[] rdfs:label "Number of employees of very large companies"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+_:y tbox:size we:Q1049 .
+?x tbox:observedEnterprise _:y .
+?x tbox:employees _:z .
+} .
+
+[] rdfs:label "Operationg income of very large companies"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+_:y tbox:size we:Q1049 .
+?x tbox:observedEnterprise _:y .
+?x tbox:operatingIncome _:z .
+} .
+
+[] rdfs:label "Total assets of fabless companies"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+_:y tbox:organizationType we:Q286 .
+?x tbox:observedEnterprise _:y .
+?x tbox:totalAssets _:z .
+} .
+
+[] rdfs:label "Total equity of foundry companies"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+_:y tbox:organizationType we:Q287 .
+?x tbox:observedEnterprise _:y .
+?x tbox:totalEquity _:z .
+} .
+
+[] rdfs:label "Total revenue of companies offering foundry services"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+_:y tbox:providesService we:Q291 .
+?x tbox:observedEnterprise _:y .
+?x tbox:totalRevenue _:z .
+} .
+
+[] rdfs:label "Capex of companies offering foundry services"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+_:y tbox:providesService we:Q291 .
+?x tbox:observedEnterprise _:y .
+?x tbox:capex _:z .
+} .
+
+[] rdfs:label "Chip fabs of very large companies"@en ;
+dc:subject "three triple patterns" ;
+rdf:value
+{
+_:y tbox:size we:Q1049 .
+_:y org:hasSite ?x .
+?x tbox:siteType we:Q297 .
+} .
+
+[] rdfs:label "IDMs with sites in Nuremberg"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "geo" ;
+rdfs:comment "the number of geonames:parentFeature hops from the various sites to Germany is not fixed" ;
+rdf:value
+{
+?x tbox:organizationType we:Q285 .
+?x org:hasSite _:y .
+_:y geonames:parentFeature__plus <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ2090.ttl#this> .
+} .
+
+[] rdfs:label "Medium size companies with sites in Nuremberg"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "geo" ;
+rdfs:comment "the number of geonames:parentFeature hops from the various sites to Germany is not fixed" ;
+rdf:value
+{
+?x tbox:size we:Q1047 .
+?x org:hasSite _:y .
+_:y geonames:parentFeature__plus <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ2090.ttl#this> .
+} .
+
+[] rdfs:label "Country where TSMC has its headquarter"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "geo" ;
+rdfs:comment "the number of geonames:parentFeature hops from the TSMC headquerter site to Taiwan is not fixed, as multiple paths exist" ;
+rdf:value
+{
+<https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this> org:hasRegisteredSite _:y .
+_:y geonames:parentFeature__plus ?x .
+?x geonames:featureCode geonames:A.PCLI .
+} .
+
+[] rdfs:label "Countries where Intel has sites"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "geo" ;
+rdfs:comment "the number of geonames:parentFeature hops from the sites to the various countries is not fixed" ;
+rdf:value
+{
+<https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> org:hasSite _:y .
+_:y geonames:parentFeature__plus ?x .
+?x geonames:featureCode geonames:A.PCLI .
+} .
+
+[] rdfs:label "Services offered by German companies"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "geo" ;
+rdfs:comment "the number of geonames:parentFeature hops from the various sites to Germany is not fixed" ;
+rdf:value
+{
+_:y tbox:providesService ?x .
+_:y org:hasRegisteredSite _:z .
+_:z geonames:parentFeature__plus <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this> .
+} .
+
+[] rdfs:label "German companies offering design services"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "geo" ;
+rdfs:comment "the number of geonames:parentFeature hops from the various sites to Germany is not fixed" ;
+rdf:value
+{
+?x tbox:providesService we:Q288 .
+?x org:hasRegisteredSite _:y .
+_:y geonames:parentFeature__plus <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this> .
+} .
+
+[] rdfs:label "Medium size companies from China"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "geo" ;
+rdfs:comment "the number of geonames:parentFeature hops from the various sites to China is not fixed" ;
+rdf:value
+{
+?x tbox:size we:Q1047 .
+?x org:hasRegisteredSite _:y .
+_:y geonames:parentFeature__plus <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ148.ttl#this> .
+} .
+
+[] rdfs:label "Net profit of companies in 2022"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+?x tbox:observedEnterprise _:y .
+?x tbox:accountingYear 2022 .
+?x tbox:netProfit _:a .
+} .
+
+[] rdfs:label "Operating income of companies in 2021"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+?x tbox:observedEnterprise _:y .
+?x tbox:accountingYear 2021 .
+?x tbox:operatingIncome _:a .
+} .
+
+[] rdfs:label "Total equity of companies given in New Taiwan dollar"@en ;
+dc:subject "three triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+?x tbox:observedEnterprise _:y .
+?x tbox:currency "New Taiwan dollar"@en . 
+?x tbox:operatingIncome _:a .
+} .
+
+
+###########################################################################
+# four triple patterns
+###########################################################################
+
+
+[] rdfs:label "Medium size suppliers of large companies"@en ;
+dc:subject "four triple patterns" ;
+dc:subject "supply" ;
+rdf:value
+{
+_:y tbox:size we:Q1048 .
+_:c esn:customer _:y . 
+_:c esn:supplier ?x .
+?x tbox:size we:Q1047 .
+} .
+
+[] rdfs:label "Medium size customers of large companies"@en ;
+dc:subject "four triple patterns" ;
+dc:subject "supply" ;
+rdf:value
+{
+_:y tbox:size we:Q1048 .
+_:c esn:customer ?x . 
+_:c esn:supplier _:y .
+?x tbox:size we:Q1047 .
+} .
+
+[] rdfs:label "Employee count of companies with assembly/test sites"@en ;
+dc:subject "four triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+_:y org:hasSite _:z .
+_:z tbox:siteType we:Q298 .
+?x tbox:observedEnterprise _:y .
+?x tbox:employees _:a .
+} .
+
+[] rdfs:label "Net profit of companies with chip fabs"@en ;
+dc:subject "four triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+_:y org:hasSite _:z .
+_:z tbox:siteType we:Q297 .
+?x tbox:observedEnterprise _:y .
+?x tbox:netProfit _:a .
+} .
+
+[] rdfs:label "Taiwanese companies that supply Intel"@en ;
+dc:subject "four triple patterns" ;
+dc:subject "supply" ;
+dc:subject "geo" ;
+rdfs:comment "the number of geonames:parentFeature hops from the various sites to Taiwan is not fixed" ;
+rdf:value
+{
+_:c esn:customer <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> . 
+_:c esn:supplier ?x .
+?x org:hasRegisteredSite _:y .
+_:y geonames:parentFeature__plus <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ865.ttl#this> .
+} .
+
+[] rdfs:label "Operating income of companies in 2021 given in New Taiwan dollar"@en ;
+dc:subject "four triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+?x tbox:observedEnterprise _:y .
+?x tbox:accountingYear 2021 .
+?x tbox:currency "New Taiwan dollar"@en . 
+?x tbox:operatingIncome _:a .
+} .
+
+[] rdfs:label "Capex of companies in 2022 given in US dollar"@en ;
+dc:subject "four triple patterns" ;
+dc:subject "keyfigure" ;
+rdf:value
+{
+?x tbox:observedEnterprise _:y .
+?x tbox:accountingYear 2021 .
+?x tbox:currency "United States dollar"@en . 
+?x tbox:operatingIncome _:a .
+} .

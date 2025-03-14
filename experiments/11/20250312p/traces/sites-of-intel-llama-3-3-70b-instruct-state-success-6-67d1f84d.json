@@ -1,0 +1,168 @@
+{
+    "messages": [
+        {
+            "role": "system",
+            "content": "Task\n\nYou are Graf von Data, an assistant designed to formulate a query based on input from User.\n\nProcess\n\nYou interact with a knowledge graph in a strict think-act-observe cycle.\n\n1. Think: Analyse the question from User and the descriptions in the representations gathered so far.\n2. Act: Choose available actions (listed below) that will best progress towards formulating the query.\n3. Observe: HALT. System will provide the result of your chosen actions in the next cycle.\n\nIn your response, start with a `Think:` section followed by an `Act:` section.\n\nActions\n\nYou can issue one or multiple of the following actions.\n\n* `search(keywords: string)`: Get URIs to resources matching the given `keywords`. Look for URIs that identify entities, i.e., make two calls: `search('foo')` and `search('bar')` instead of `search('foo bar')`.\n* `deref(resource URI: string)`: Get all triples with `resource URI` in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with `deref()`.\n* `query(sparql: string)`: Evaluate `sparql` and get solutions. Consider using path expressions, i.e., `*` or `+` for paths of transitive properties and `|` for alternative paths.\n\nYou issue run actions concurrently using `|`, e.g., `search('foo') | search('bar')`.\nFormat action calls as follows: `Act: describe('http://foo/bar')` or `Act: query('PREFIX : <#> SELECT DISTINCT ?x WHERE { ... }')`.\nUse quotes for arguments.\n\nChat\n\nSometimes User does not seek factual information.\n\n* `chat(text: string)`: Issue a `chat()` action if User does not seek factual information from the knowledge graph.\n\nConditions\n\nOnce you have come up with the final query, check the query via `query()` and then end.\n\n* `success(text: string)`: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.\n\nIf nearing about ten cycles:\n\n* `fail(text: string)`: You have no other choice than to give up. Optionally report to User the relevant steps you tried.\n\nStages\n\n* Identify key resources in the User question and find URIs via `Act: search()`.\n* Next, dereference key resources via `Act: deref()`.\nIteratively expand your knowledge about the graph via `Act: deref()` to gather information required to construct the query.\nConsider obtaining information about classes and properties via `Act: deref()`, especially domain and range of properties.\nConsider obtaining information about the graph structure on the level of instances or assertions.\n* Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.\nThen, expand the query iteratively with more triple patterns.\n\nCritical Instructions\n\n* Ensure that all URIs used in the query exist in the knowledge graph.\n* Only use URIs that have been previously mentioned or discovered via `search()` or `deref()`.\n* Never repeat successfully executed actions, the results will be the same."
+        },
+        {
+            "role": "system",
+            "content": "System has access to ['..\\\\knowledge-graph\\\\velektronik-graph-clean\\\\abox-en.ttl.gz', '..\\\\knowledge-graph\\\\velektronik-graph-clean\\\\tbox.ttl'] with 32346 triples. System version v0.2.8-93-gfa87822d is using llama-3.3-70b-instruct at chat-ai.academiccloud.de."
+        },
+        {
+            "role": "user",
+            "content": "Sites of Intel"
+        },
+        {
+            "role": "assistant",
+            "content": "Think: The user is asking about sites related to Intel, which could refer to various locations or websites associated with the company. To formulate a query, we need to identify the key resources and find their URIs.\n\nAct: search('Intel') | search('Intel sites') | search('Intel locations')",
+            "actions": [
+                {
+                    "name": "search",
+                    "argument": "Intel"
+                },
+                {
+                    "name": "search",
+                    "argument": "Intel sites"
+                },
+                {
+                    "name": "search",
+                    "argument": "Intel locations"
+                }
+            ]
+        },
+        {
+            "role": "tool",
+            "content": "The keyword search for `Intel` returned the following ranked list with hits.\n\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this **['Intel']** 1.0000\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ167.ttl#this **['Integral']** 0.5976\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ60.ttl#this **['Intersil']** 0.5976\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this **['Intel Fab Oregon']** 0.5345\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this **['Intel Fab Irland']** 0.5345"
+        },
+        {
+            "role": "tool",
+            "content": "The keyword search for `Intel sites` returned the following ranked list with hits.\n\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this **['Intel']** 0.6290\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this **['Intel Fab Oregon']** 0.3922\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this **['Intel Fab Irland']** 0.3922\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ301.ttl#this **['Intel Fab Arizona']** 0.3818\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ612.ttl#this **['Intel Fab Jerusalem']** 0.3631"
+        },
+        {
+            "role": "tool",
+            "content": "The keyword search for `Intel locations` returned the following ranked list with hits.\n\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this **['Intel']** 0.5500\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ800.ttl#this **['International Test Solutions']** 0.4991\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ801.ttl#this **['International Test Solutions Reno Fab']** 0.4068\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this **['Intel Fab Oregon']** 0.3430\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this **['Intel Fab Irland']** 0.3430"
+        },
+        {
+            "role": "assistant",
+            "content": "Think: We have found several URIs related to Intel, including the company itself and various sites or locations. To gather more information, we can dereference these URIs.\n\nAct: deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this')",
+            "actions": [
+                {
+                    "name": "deref",
+                    "argument": "https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this"
+                },
+                {
+                    "name": "deref",
+                    "argument": "https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this"
+                },
+                {
+                    "name": "deref",
+                    "argument": "https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this"
+                }
+            ]
+        },
+        {
+            "role": "tool",
+            "content": "The description of `https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this` is as follows.\n\n    @prefix ns1: <https://www.w3.org/ns/org#> .\n    @prefix owl: <http://www.w3.org/2002/07/owl#> .\n    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n    @prefix tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> .\n    \n    <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> a owl:Thing,\n            <https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise>,\n            ns1:Organization ;\n        rdfs:label \"Intel\"@en ;\n        owl:sameAs <http://www.wikidata.org/entity/Q248>,\n            <https://welektronik.iis.fraunhofer.de/entity/Q22> ;\n        tbox:organizationType <https://welektronik.iis.fraunhofer.de/entity/Q285> ;\n        tbox:providesService <https://welektronik.iis.fraunhofer.de/entity/Q291> ;\n        tbox:size <https://welektronik.iis.fraunhofer.de/entity/Q1049> ;\n        ns1:hasRegisteredSite <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#headquarter> ;\n        ns1:hasSite <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this>,\n            <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ299.ttl#this>,\n            <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ300.ttl#this>,\n            <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ301.ttl#this>,\n            <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this>,\n            <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ303.ttl#this>,\n            <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ304.ttl#this>,\n            <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ305.ttl#this>,\n            <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ306.ttl#this>,\n            <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ612.ttl#this> ."
+        },
+        {
+            "role": "tool",
+            "content": "The description of `https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this` is as follows.\n\n    @prefix ns1: <http://www.geonames.org/ontology#> .\n    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n    @prefix tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> .\n    \n    <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this> a ns1:Feature,\n            <https://www.w3.org/ns/org#Site> ;\n        rdfs:label \"Intel Fab Oregon\"@en ;\n        ns1:featureClass ns1:S ;\n        ns1:parentFeature <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ81824.ttl#this> ;\n        tbox:siteType <https://welektronik.iis.fraunhofer.de/entity/Q297> ."
+        },
+        {
+            "role": "tool",
+            "content": "The description of `https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this` is as follows.\n\n    @prefix ns1: <http://www.geonames.org/ontology#> .\n    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n    @prefix tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> .\n    \n    <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this> a ns1:Feature,\n            <https://www.w3.org/ns/org#Site> ;\n        rdfs:label \"Intel Fab Irland\"@en ;\n        ns1:featureClass ns1:S ;\n        ns1:parentFeature <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ987797.ttl#this> ;\n        tbox:siteType <https://welektronik.iis.fraunhofer.de/entity/Q297> ."
+        },
+        {
+            "role": "assistant",
+            "content": "Think: We have gathered information about Intel and its sites. To construct a query, we need to identify the key resources and their relationships.\n\nAct: query('PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX ns1: <http://www.geonames.org/ontology#> SELECT DISTINCT ?site ?siteLabel WHERE { ?site a ns1:Feature, <https://www.w3.org/ns/org#Site> ; rdfs:label ?siteLabel ; ns1:parentFeature ?parent . ?parent ns1:featureClass ns1:A . ?site tbox:siteType ?type . FILTER (?type = <https://welektronik.iis.fraunhofer.de/entity/Q297>) }')",
+            "actions": [
+                {
+                    "name": "query",
+                    "argument": "PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX ns1: <http://www.geonames.org/ontology#> SELECT DISTINCT ?site ?siteLabel WHERE { ?site a ns1:Feature, <https://www.w3.org/ns/org#Site> ; rdfs:label ?siteLabel ; ns1:parentFeature ?parent . ?parent ns1:featureClass ns1:A . ?site tbox:siteType ?type . FILTER (?type = <https://welektronik.iis.fraunhofer.de/entity/Q297>) }"
+                }
+            ]
+        },
+        {
+            "role": "tool",
+            "content": "The query 'PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX ns1: <http://www.geonames.org/ontology#> SELECT DISTINCT ?site ?siteLabel WHERE { ?site a ns1:Feature, <https://www.w3.org/ns/org#Site> ; rdfs:label ?siteLabel ; ns1:parentFeature ?parent . ?parent ns1:featureClass ns1:A . ?site tbox:siteType ?type . FILTER (?type = <https://welektronik.iis.fraunhofer.de/entity/Q297>) }' returned the following solution.\n\n    site,siteLabel\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ533.ttl#this,Micron Semiconductor Singapore Fab\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ552.ttl#this,GlobalFoundries Singapore Fab\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ554.ttl#this,United Microelectronics Corporation Singapore Fab\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ787.ttl#this,Applied Materials Singapore Fab"
+        },
+        {
+            "role": "assistant",
+            "content": "Think: The query returned several sites, but none of them are related to Intel. We need to modify the query to include the relationship between Intel and its sites.\n\nAct: query('PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX ns1: <http://www.geonames.org/ontology#> PREFIX org: <https://www.w3.org/ns/org#> SELECT DISTINCT ?site ?siteLabel WHERE { <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> org:hasSite ?site . ?site a ns1:Feature, org:Site ; rdfs:label ?siteLabel ; ns1:parentFeature ?parent . ?parent ns1:featureClass ns1:A . ?site tbox:siteType ?type . FILTER (?type = <https://welektronik.iis.fraunhofer.de/entity/Q297>) }')",
+            "actions": [
+                {
+                    "name": "query",
+                    "argument": "PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX ns1: <http://www.geonames.org/ontology#> PREFIX org: <https://www.w3.org/ns/org#> SELECT DISTINCT ?site ?siteLabel WHERE { <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> org:hasSite ?site . ?site a ns1:Feature, org:Site ; rdfs:label ?siteLabel ; ns1:parentFeature ?parent . ?parent ns1:featureClass ns1:A . ?site tbox:siteType ?type . FILTER (?type = <https://welektronik.iis.fraunhofer.de/entity/Q297>) }"
+                }
+            ]
+        },
+        {
+            "role": "tool",
+            "content": "No results for `query('PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX ns1: <http://www.geonames.org/ontology#> PREFIX org: <https://www.w3.org/ns/org#> SELECT DISTINCT ?site ?siteLabel WHERE { <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> org:hasSite ?site . ?site a ns1:Feature, org:Site ; rdfs:label ?siteLabel ; ns1:parentFeature ?parent . ?parent ns1:featureClass ns1:A . ?site tbox:siteType ?type . FILTER (?type = <https://welektronik.iis.fraunhofer.de/entity/Q297>) }')`."
+        },
+        {
+            "role": "assistant",
+            "content": "Think: The query did not return any results. We need to modify the query to correctly retrieve the sites related to Intel.\n\nAct: query('PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX ns1: <http://www.geonames.org/ontology#> PREFIX org: <https://www.w3.org/ns/org#> SELECT DISTINCT ?site ?siteLabel WHERE { <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> org:hasSite ?site . ?site a ns1:Feature, org:Site ; rdfs:label ?siteLabel . }')",
+            "actions": [
+                {
+                    "name": "query",
+                    "argument": "PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX ns1: <http://www.geonames.org/ontology#> PREFIX org: <https://www.w3.org/ns/org#> SELECT DISTINCT ?site ?siteLabel WHERE { <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> org:hasSite ?site . ?site a ns1:Feature, org:Site ; rdfs:label ?siteLabel . }"
+                }
+            ]
+        },
+        {
+            "role": "tool",
+            "content": "The query 'PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX ns1: <http://www.geonames.org/ontology#> PREFIX org: <https://www.w3.org/ns/org#> SELECT DISTINCT ?site ?siteLabel WHERE { <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> org:hasSite ?site . ?site a ns1:Feature, org:Site ; rdfs:label ?siteLabel . }' returned the following solution.\n\n    site,siteLabel\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ295.ttl#this,Intel Fab Irland\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ299.ttl#this,Intel Fab Kiryat Gat\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ300.ttl#this,Intel Fab New Mexico\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ301.ttl#this,Intel Fab Arizona\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ302.ttl#this,Intel Fab Oregon\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ303.ttl#this,Intel Assembly/Test Malaysia\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ304.ttl#this,Intel Assembly/Test Vietnam\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ305.ttl#this,Intel Assembly/Test Chengdu\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ306.ttl#this,Intel Assembly/Test Costa Rica\r\n    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ612.ttl#this,Intel Fab Jerusalem"
+        },
+        {
+            "role": "assistant",
+            "content": "Think: The query returned the correct results, which are the sites related to Intel. We can now confirm the query as final.\n\nAct: success('The final query retrieves the sites related to Intel.')",
+            "actions": [
+                {
+                    "name": "success",
+                    "argument": "The final query retrieves the sites related to Intel."
+                }
+            ]
+        }
+    ],
+    "summary": {
+        "loop": {
+            "id": "67d1f84d",
+            "question": "Sites of Intel",
+            "iterations": 6,
+            "state": "SUCCESS",
+            "sparql": "PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX ns1: <http://www.geonames.org/ontology#> PREFIX org: <https://www.w3.org/ns/org#> SELECT DISTINCT ?site ?siteLabel WHERE { <https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this> org:hasSite ?site . ?site a ns1:Feature, org:Site ; rdfs:label ?siteLabel . }",
+            "elapsed_time": 80383
+        },
+        "tokens": {
+            "prompt_tokens": 18653,
+            "completion_tokens": 853,
+            "elapsed_time_model": 68228,
+            "tokens_per_sec": 285.8930388056706
+        },
+        "git": {
+            "label": "v0.2.8-93-gfa87822d",
+            "commit": "fa87822d9e4dc7607312373ccc8fbd8675364b05"
+        },
+        "sources": [
+            "..\\knowledge-graph\\velektronik-graph-clean\\abox-en.ttl.gz",
+            "..\\knowledge-graph\\velektronik-graph-clean\\tbox.ttl"
+        ],
+        "client_info": {
+            "model": "llama-3.3-70b-instruct",
+            "max_tokens": 1024,
+            "temperature": 0,
+            "top_p": 1,
+            "baseuri": "https://chat-ai.academiccloud.de/v1/"
+        },
+        "platform": {
+            "node": "r10389",
+            "platform": "Windows-10-10.0.19045-SP0",
+            "system": "Windows",
+            "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+            "machine": "AMD64",
+            "physical_memory": 15.342079162597656,
+            "python_version": "3.12.7"
+        }
+    }
+}

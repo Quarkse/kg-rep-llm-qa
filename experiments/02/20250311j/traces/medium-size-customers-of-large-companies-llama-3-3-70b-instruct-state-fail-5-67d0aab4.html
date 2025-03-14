@@ -1,0 +1,361 @@
+<p>Task</p>
+<p>You are Graf von Data, an assistant designed to formulate a query based on input from User.</p>
+<p>Process</p>
+<p>You interact with a knowledge graph in a strict think-act-observe cycle.</p>
+<ol>
+<li>Think: Analyse the question from User and the descriptions in the representations gathered so far.</li>
+<li>Act: Choose available actions (listed below) that will best progress towards formulating the query.</li>
+<li>Observe: HALT. System will provide the result of your chosen actions in the next cycle.</li>
+</ol>
+<p>In your response, start with a <code>Think:</code> section followed by an <code>Act:</code> section.</p>
+<p>Actions</p>
+<p>You can issue one or multiple of the following actions.</p>
+<ul>
+<li><code>search(keywords: string)</code>: Get URIs to resources matching the given <code>keywords</code>. Look for URIs that identify entities, i.e., make two calls: <code>search('foo')</code> and <code>search('bar')</code> instead of <code>search('foo bar')</code>.</li>
+<li><code>deref(resource URI: string)</code>: Get all triples with <code>resource URI</code> in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with <code>deref()</code>.</li>
+<li><code>query(sparql: string)</code>: Evaluate <code>sparql</code> and get solutions. Consider using path expressions, i.e., <code>*</code> or <code>+</code> for paths of transitive properties and <code>|</code> for alternative paths.</li>
+</ul>
+<p>You issue run actions concurrently using <code>|</code>, e.g., <code>search('foo') | search('bar')</code>.
+Format action calls as follows: <code>Act: describe('http://foo/bar')</code> or <code>Act: query('PREFIX : &lt;#&gt; SELECT DISTINCT ?x WHERE { ... }')</code>.
+Use quotes for arguments.</p>
+<p>Chat</p>
+<p>Sometimes User does not seek factual information.</p>
+<ul>
+<li><code>chat(text: string)</code>: Issue a <code>chat()</code> action if User does not seek factual information from the knowledge graph.</li>
+</ul>
+<p>Conditions</p>
+<p>Once you have come up with the final query, check the query via <code>query()</code> and then end.</p>
+<ul>
+<li><code>success(text: string)</code>: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.</li>
+</ul>
+<p>If nearing about ten cycles:</p>
+<ul>
+<li><code>fail(text: string)</code>: You have no other choice than to give up. Optionally report to User the relevant steps you tried.</li>
+</ul>
+<p>Stages</p>
+<ul>
+<li>Identify key resources in the User question and find URIs via <code>Act: search()</code>.</li>
+<li>Next, dereference key resources via <code>Act: deref()</code>.
+Iteratively expand your knowledge about the graph via <code>Act: deref()</code> to gather information required to construct the query.
+Consider obtaining information about classes and properties via <code>Act: deref()</code>, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.</li>
+<li>Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.</li>
+</ul>
+<p>Critical Instructions</p>
+<ul>
+<li>Ensure that all URIs used in the query exist in the knowledge graph.</li>
+<li>Only use URIs that have been previously mentioned or discovered via <code>search()</code> or <code>deref()</code>.</li>
+<li>Never repeat successfully executed actions, the results will be the same.</li>
+</ul>
+<hr />
+<p>System has access to ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'] with 32276 triples. System version v0.2.8-91-g5e507554 is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.</p>
+<hr />
+<p>Medium size customers of large companies</p>
+<hr />
+<p>Think: The user is asking about medium-sized customers of large companies. To formulate a query, we need to identify the key resources involved, such as "medium-sized customers" and "large companies". We also need to consider the relationships between these resources, such as "customer of" or "client of".</p>
+<p>Act: search('medium-sized customers') | search('large companies') | search('customer relationship')</p>
+<hr />
+<p>The keyword search for <code>medium-sized customers</code> returned the following ranked list with hits.</p>
+<pre><code>https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#customer **customer** 0.4719
+https://welektronik.iis.fraunhofer.de/entity/Q1047 **Medium** 0.4523
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ39.ttl#this **MediaTek** 0.2697
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ110421.ttl#this **Medina County** 0.2202
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ138.ttl#this **Melexis** 0.2132
+</code></pre>
+<hr />
+<p>The keyword search for <code>large companies</code> returned the following ranked list with hits.</p>
+<pre><code>https://welektronik.iis.fraunhofer.de/entity/Q1048 **Large** 0.5669
+https://welektronik.iis.fraunhofer.de/entity/Q1049 **Very large** 0.3608
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1467149.ttl#this **Labège** 0.2652
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this **Active Business Company** 0.2500
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1438.ttl#this **Campania** 0.2372
+</code></pre>
+<hr />
+<p>The keyword search for <code>customer relationship</code> returned the following ranked list with hits.</p>
+<pre><code>https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#customer **customer** 0.5934
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ718428.ttl#this **Erlin Township** 0.2606
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ709917.ttl#this **Alishan Township** 0.2457
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/person/wdQ84747997.ttl#conf-islped-SuLDAN03 **Full chip leakage estimation considering power supply and temperature variations.** 0.2404
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ801.ttl#this **International Test Solutions Reno Fab** 0.2226
+</code></pre>
+<hr />
+<p>Think: We have identified some key resources related to "medium-sized customers", "large companies", and "customer relationship". We can see that the search results include URIs for concepts such as "customer" and "large", as well as specific companies and regions. To further refine our query, we need to explore the relationships between these resources and gather more information about the graph structure.</p>
+<p>Act: deref('https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#customer') | deref('https://welektronik.iis.fraunhofer.de/entity/Q1048') | deref('https://welektronik.iis.fraunhofer.de/entity/Q1049')</p>
+<hr />
+<p>The description of <code>https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#customer</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+
+&lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#customer&gt; a owl:ObjectProperty ;
+    rdfs:label "customer"@en ;
+    rdfs:domain &lt;https://purl.org/supply-network/onto#SupplyFlow&gt; ;
+    rdfs:range &lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://welektronik.iis.fraunhofer.de/entity/Q1048</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1041.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1042.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1061.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1064.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1070.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1072.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1073.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1079.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1093.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1096.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1101.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1128.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1162.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ126.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ131.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ144.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ147.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ148.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ157.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ158.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ17.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ178.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ223.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ236.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ237.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ24.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ242.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ253.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ259.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ27.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ29.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ30.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ32.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ33.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ34.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ37.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ38.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ39.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ40.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ46.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ47.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ49.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ50.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ51.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ53.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ61.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ62.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ66.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ668.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ676.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ677.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ688.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ70.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ700.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ71.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ710.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ715.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ720.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ721.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ74.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ79.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ89.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ99.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; a &lt;https://welektronik.iis.fraunhofer.de/entity/Q1045&gt; ;
+    rdfs:label "Large"@en .
+</code></pre>
+<hr />
+<p>The description of <code>https://welektronik.iis.fraunhofer.de/entity/Q1049</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1075.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1092.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1098.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1123.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1175.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ143.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ150.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ163.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ21.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ23.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ245.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ25.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ254.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ26.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ28.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ31.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ35.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ36.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ45.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ54.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ56.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ58.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ59.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ63.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ65.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ67.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ675.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ679.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ68.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ69.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ699.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ706.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ709.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ719.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ76.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ82.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ85.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ90.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ91.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ92.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ94.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ95.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ96.ttl#this&gt; tbox:size &lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q1049&gt; a &lt;https://welektronik.iis.fraunhofer.de/entity/Q1045&gt; ;
+    rdfs:label "Very large"@en .
+</code></pre>
+<hr />
+<p>Think: We have gathered more information about the key resources involved, including the properties and relationships between them. We can see that the <code>tbox:size</code> property is used to describe the size of companies, and that there are several companies with a size of "Large" or "Very large". We also have information about the <code>customer</code> property, which is used to describe the relationship between companies and their customers.</p>
+<p>Act: query('PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX rdfs: <a href="http://www.w3.org/2000/01/rdf-schema#">http://www.w3.org/2000/01/rdf-schema#</a> SELECT DISTINCT ?company ?size WHERE { ?company tbox:size ?size . FILTER (?size = <a href="https://welektronik.iis.fraunhofer.de/entity/Q1048">https://welektronik.iis.fraunhofer.de/entity/Q1048</a> || ?size = <a href="https://welektronik.iis.fraunhofer.de/entity/Q1049">https://welektronik.iis.fraunhofer.de/entity/Q1049</a>) }')</p>
+<hr />
+<p>The query 'PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX rdfs: <a href="http://www.w3.org/2000/01/rdf-schema#">http://www.w3.org/2000/01/rdf-schema#</a> SELECT DISTINCT ?company ?size WHERE { ?company tbox:size ?size . FILTER (?size = <a href="https://welektronik.iis.fraunhofer.de/entity/Q1048">https://welektronik.iis.fraunhofer.de/entity/Q1048</a> || ?size = <a href="https://welektronik.iis.fraunhofer.de/entity/Q1049">https://welektronik.iis.fraunhofer.de/entity/Q1049</a>) }' returned the following solution (first 20 results).
+    company,size
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1041.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ126.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ144.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ237.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ242.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ253.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ677.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ710.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1061.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1072.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1073.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1079.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1128.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1162.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ147.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ157.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ236.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ50.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ51.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ62.ttl#this,https://welektronik.iis.fraunhofer.de/entity/Q1048</p>
+<hr />
+<p>Think: We have identified the companies with a size of "Large" or "Very large". To find the medium-sized customers of these companies, we need to explore the relationships between these companies and their customers.</p>
+<p>Act: query('PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX rdfs: <a href="http://www.w3.org/2000/01/rdf-schema#">http://www.w3.org/2000/01/rdf-schema#</a> SELECT DISTINCT ?company ?customer WHERE { ?company tbox:customer ?customer . FILTER (?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1041.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1041.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ126.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ126.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ144.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ144.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ237.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ237.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ242.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ242.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ253.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ253.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ677.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ677.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ710.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ710.ttl#this</a>) }')</p>
+<hr />
+<p>No results for <code>query('PREFIX tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; SELECT DISTINCT ?company ?customer WHERE { ?company tbox:customer ?customer . FILTER (?company = &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1041.ttl#this&gt; || ?company = &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ126.ttl#this&gt; || ?company = &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ144.ttl#this&gt; || ?company = &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ237.ttl#this&gt; || ?company = &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ242.ttl#this&gt; || ?company = &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ253.ttl#this&gt; || ?company = &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ677.ttl#this&gt; || ?company = &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ710.ttl#this&gt;) }')</code>.</p>
+<hr />
+<p>Think: Unfortunately, we were unable to find any medium-sized customers of large companies in the knowledge graph. This may be due to the lack of information about customer relationships in the graph.</p>
+<p>Act: fail('Unable to find medium-sized customers of large companies in the knowledge graph.')</p>
+<p>{'loop': {'id': '67d0aab4', 'question': 'Medium size customers of large companies', 'iterations': 5, 'state': <State.FAIL: 'FAIL'>, 'sparql': 'PREFIX tbox: <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX rdfs: <a href="http://www.w3.org/2000/01/rdf-schema#">http://www.w3.org/2000/01/rdf-schema#</a> SELECT DISTINCT ?company ?customer WHERE { ?company tbox:customer ?customer . FILTER (?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1041.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1041.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ126.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ126.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ144.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ144.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ237.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ237.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ242.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ242.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ253.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ253.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ677.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ677.ttl#this</a> || ?company = <a href="https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ710.ttl#this">https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ710.ttl#this</a>) }', 'elapsed_time': 78174}, 'tokens': {'prompt_tokens': 34091, 'completion_tokens': 977, 'elapsed_time_model': 72359, 'tokens_per_sec': 484.63586897956355}, 'git': {'label': 'v0.2.8-91-g5e507554', 'commit': '5e507554e7591bf3e1500b8f32ab0205253aa1ca'}, 'sources': ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}</p>

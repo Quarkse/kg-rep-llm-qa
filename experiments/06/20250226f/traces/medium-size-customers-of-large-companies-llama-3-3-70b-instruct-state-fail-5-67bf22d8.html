@@ -1,0 +1,130 @@
+<p>Task</p>
+<p>You are Graf von Data, an assistant designed to formulate a query based on input from User.</p>
+<p>Process</p>
+<p>You interact with a knowledge graph in a strict think-act-observe cycle.</p>
+<ol>
+<li>Think: Analyse the question from User and the descriptions in the representations gathered so far.</li>
+<li>Act: Choose available actions (listed below) that will best progress towards formulating the query.</li>
+<li>Observe: HALT. System will provide the result of your chosen actions in the next cycle.</li>
+</ol>
+<p>In your response, start with a <code>Think:</code> section followed by an <code>Act:</code> section.</p>
+<p>Actions</p>
+<p>You can issue one or multiple of the following actions.</p>
+<ul>
+<li><code>search(keywords: string)</code>: Get URIs to resources matching the given <code>keywords</code>. Look for URIs that identify entities, i.e., make two calls: <code>search('foo')</code> and <code>search('bar')</code> instead of <code>search('foo bar')</code>.</li>
+<li><code>deref(resource URI: string)</code>: Get all triples with <code>resource URI</code> in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with <code>deref()</code>.</li>
+<li><code>query(sparql: string)</code>: Evaluate <code>sparql</code> and get solutions. Consider using path expressions, i.e., <code>*</code> or <code>+</code> for paths of transitive properties and <code>|</code> for alternative paths.</li>
+</ul>
+<p>You issue run actions concurrently using <code>|</code>, e.g., <code>search('foo') | search('bar')</code>.
+Format action calls as follows: <code>Act: describe('http://foo/bar')</code> or <code>Act: query('PREFIX : &lt;#&gt; SELECT DISTINCT ?x WHERE { ... }')</code>.
+Use quotes for arguments.</p>
+<p>Chat</p>
+<p>Sometimes User does not seek factual information.</p>
+<ul>
+<li><code>chat(text: string)</code>: Issue a <code>chat()</code> action if User does not seek factual information from the knowledge graph.</li>
+</ul>
+<p>Conditions</p>
+<p>Once you have come up with the final query, check the query via <code>query()</code> and then end.</p>
+<ul>
+<li><code>success(text: string)</code>: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.</li>
+</ul>
+<p>If nearing about ten cycles:</p>
+<ul>
+<li><code>fail(text: string)</code>: You have no other choice than to give up. Optionally report to User the relevant steps you tried.</li>
+</ul>
+<p>Stages</p>
+<ul>
+<li>Identify key resources in the User question and find URIs via <code>Act: search()</code>.</li>
+<li>Next, dereference key resources via <code>Act: deref()</code>.
+Iteratively expand your knowledge about the graph via <code>Act: deref()</code> to gather information required to construct the query.
+Consider obtaining information about classes and properties via <code>Act: deref()</code>, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.</li>
+<li>Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.</li>
+</ul>
+<p>Critical Instructions</p>
+<ul>
+<li>Ensure that all URIs used in the query exist in the knowledge graph.</li>
+<li>Only use URIs that have been previously mentioned or discovered via <code>search()</code> or <code>deref()</code>.</li>
+<li>Never repeat successfully executed actions, the results will be the same.</li>
+</ul>
+<hr />
+<p>System has access to ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'] with 32290 triples. System version v0.2.8-77-g05f9f338 is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.</p>
+<hr />
+<p>Medium size customers of large companies</p>
+<hr />
+<p>Think: The User is asking about medium size customers of large companies. To formulate a query, we need to identify the key resources involved, such as "medium size customers" and "large companies". We also need to consider the relationships between these resources, such as "customer of" or "purchases from".</p>
+<p>Act: search('medium size customers') | search('large companies') | search('customer relationship')</p>
+<hr />
+<p>The keyword search for <code>medium size customers</code> returned the following ranked list with hits.</p>
+<pre><code>https://welektronik.iis.fraunhofer.de/entity/Q1047 **Medium** 0.5160
+https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#customer **customer** 0.4616
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#size **size** 0.3405
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ39.ttl#this **MediaTek** 0.2638
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ110421.ttl#this **Medina County** 0.2154
+</code></pre>
+<hr />
+<p>The keyword search for <code>large companies</code> returned the following ranked list with hits.</p>
+<pre><code>https://welektronik.iis.fraunhofer.de/entity/Q1048 **Large** 0.5669
+https://welektronik.iis.fraunhofer.de/entity/Q1049 **Very large** 0.3608
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1467149.ttl#this **Labège** 0.2652
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this **Active Business Company** 0.2500
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1438.ttl#this **Campania** 0.2372
+</code></pre>
+<hr />
+<p>The keyword search for <code>customer relationship</code> returned the following ranked list with hits.</p>
+<pre><code>https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#customer **customer** 0.5934
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ718428.ttl#this **Erlin Township** 0.2606
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ709917.ttl#this **Alishan Township** 0.2457
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/person/wdQ84747997.ttl#conf-islped-SuLDAN03 **Full chip leakage estimation considering power supply and temperature variations.** 0.2404
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ801.ttl#this **International Test Solutions Reno Fab** 0.2226
+</code></pre>
+<hr />
+<p>Think: We have identified some key resources related to "medium size customers", "large companies", and "customer relationship". We can now use these resources to gather more information about the relationships between them.</p>
+<p>Act: deref('https://welektronik.iis.fraunhofer.de/entity/Q1047') | deref('https://welektronik.iis.fraunhofer.de/entity/Q1048') | deref('https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#customer')</p>
+<hr />
+<p>The description of <code>https://welektronik.iis.fraunhofer.de/entity/Q1047</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q1047&gt; a &lt;https://welektronik.iis.fraunhofer.de/entity/Q1045&gt; ;
+    rdfs:label "Medium"@en .
+</code></pre>
+<hr />
+<p>The description of <code>https://welektronik.iis.fraunhofer.de/entity/Q1048</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q1048&gt; a &lt;https://welektronik.iis.fraunhofer.de/entity/Q1045&gt; ;
+    rdfs:label "Large"@en .
+</code></pre>
+<hr />
+<p>The description of <code>https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#customer</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise&gt; a rdfs:Class ;
+    rdfs:label "Enterprise"@en .
+
+&lt;https://purl.org/supply-network/onto#SupplyFlow&gt; a rdfs:Class ;
+    rdfs:label "Supply Flow"@en .
+
+&lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#customer&gt; a owl:ObjectProperty ;
+    rdfs:label "customer"@en ;
+    rdfs:domain &lt;https://purl.org/supply-network/onto#SupplyFlow&gt; ;
+    rdfs:range &lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise&gt; ;
+    owl:inverseOf tbox:incomingSupplyFlow .
+</code></pre>
+<hr />
+<p>Think: We have gathered more information about the relationships between "medium size customers", "large companies", and "customer relationship". We can now use this information to construct a query that will retrieve the medium size customers of large companies.</p>
+<p>Act: query('PREFIX esn: <a href="https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#">https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#</a> PREFIX velek: <a href="https://welektronik.iis.fraunhofer.de/entity/">https://welektronik.iis.fraunhofer.de/entity/</a> SELECT DISTINCT ?customer WHERE { ?supplyFlow esn:customer ?customer . ?customer velek:Q1047 "Medium"@en . ?supplyFlow esn:supplier ?supplier . ?supplier velek:Q1048 "Large"@en . }')</p>
+<hr />
+<p>No results for <code>query('PREFIX esn: &lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#&gt; PREFIX velek: &lt;https://welektronik.iis.fraunhofer.de/entity/&gt; SELECT DISTINCT ?customer WHERE { ?supplyFlow esn:customer ?customer . ?customer velek:Q1047 "Medium"@en . ?supplyFlow esn:supplier ?supplier . ?supplier velek:Q1048 "Large"@en . }')</code>.</p>
+<hr />
+<p>Think: The query did not return any results. This could be due to the fact that the relationships between "medium size customers", "large companies", and "customer relationship" are not explicitly defined in the knowledge graph. We need to reformulate the query to retrieve the desired information.</p>
+<p>Act: query('PREFIX esn: <a href="https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#">https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#</a> PREFIX velek: <a href="https://welektronik.iis.fraunhofer.de/entity/">https://welektronik.iis.fraunhofer.de/entity/</a> SELECT DISTINCT ?customer WHERE { ?customer a esn:Enterprise . ?customer esn:customer ?supplyFlow . ?supplyFlow esn:supplier ?supplier . ?supplier a esn:Enterprise . FILTER (EXISTS { ?customer velek:Q1047 "Medium"@en }) . FILTER (EXISTS { ?supplier velek:Q1048 "Large"@en }) . }')</p>
+<hr />
+<p>No results for <code>query('PREFIX esn: &lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#&gt; PREFIX velek: &lt;https://welektronik.iis.fraunhofer.de/entity/&gt; SELECT DISTINCT ?customer WHERE { ?customer a esn:Enterprise . ?customer esn:customer ?supplyFlow . ?supplyFlow esn:supplier ?supplier . ?supplier a esn:Enterprise . FILTER (EXISTS { ?customer velek:Q1047 "Medium"@en }) . FILTER (EXISTS { ?supplier velek:Q1048 "Large"@en }) . }')</code>.</p>
+<hr />
+<p>Think: The query still did not return any results. We have tried different approaches to retrieve the medium size customers of large companies, but the knowledge graph does not seem to contain the necessary information to answer this question.</p>
+<p>Act: fail('Unable to retrieve medium size customers of large companies due to lack of information in the knowledge graph.')</p>
+<p>{'loop': {'id': '67bf22d8', 'question': 'Medium size customers of large companies', 'iterations': 5, 'state': <State.FAIL: 'FAIL'>, 'sparql': 'PREFIX esn: <a href="https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#">https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#</a> PREFIX velek: <a href="https://welektronik.iis.fraunhofer.de/entity/">https://welektronik.iis.fraunhofer.de/entity/</a> SELECT DISTINCT ?customer WHERE { ?customer a esn:Enterprise . ?customer esn:customer ?supplyFlow . ?supplyFlow esn:supplier ?supplier . ?supplier a esn:Enterprise . FILTER (EXISTS { ?customer velek:Q1047 "Medium"@en }) . FILTER (EXISTS { ?supplier velek:Q1048 "Large"@en }) . }', 'elapsed_time': 63796}, 'tokens': {'prompt_tokens': 10360, 'completion_tokens': 638, 'elapsed_time_model': 41362, 'tokens_per_sec': 265.890308132402}, 'git': {'label': 'v0.2.8-77-g05f9f338', 'commit': '05f9f33880e9523b7eb3f19ed97e6b71bef1547a'}, 'sources': ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}</p>

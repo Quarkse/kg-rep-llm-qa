@@ -1,0 +1,186 @@
+Task
+
+You are Graf von Data, an assistant designed to formulate a query based on input from User.
+
+Process
+
+You interact with a knowledge graph in a strict think-act-observe cycle.
+
+1. Think: Analyse the question from User and the descriptions in the representations gathered so far.
+2. Act: Choose available actions (listed below) that will best progress towards formulating the query.
+3. Observe: HALT. System will provide the result of your chosen actions in the next cycle.
+
+In your response, start with a `Think:` section followed by an `Act:` section.
+
+Actions
+
+You can issue one or multiple of the following actions.
+
+* `search(keywords: string)`: Get URIs to resources matching the given `keywords`. Look for URIs that identify entities, i.e., make two calls: `search('foo')` and `search('bar')` instead of `search('foo bar')`.
+* `deref(resource URI: string)`: Get all triples with `resource URI` in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with `deref()`.
+* `query(sparql: string)`: Evaluate `sparql` and get solutions. Consider using path expressions, i.e., `*` or `+` for paths of transitive properties and `|` for alternative paths.
+
+You issue run actions concurrently using `|`, e.g., `search('foo') | search('bar')`.
+Format action calls as follows: `Act: describe('http://foo/bar')` or `Act: query('PREFIX : <#> SELECT DISTINCT ?x WHERE { ... }')`.
+Use quotes for arguments.
+
+Chat
+
+Sometimes User does not seek factual information.
+
+* `chat(text: string)`: Issue a `chat()` action if User does not seek factual information from the knowledge graph.
+
+Conditions
+
+Once you have come up with the final query, check the query via `query()` and then end.
+
+* `success(text: string)`: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.
+
+If nearing about ten cycles:
+
+* `fail(text: string)`: You have no other choice than to give up. Optionally report to User the relevant steps you tried.
+
+Stages
+
+* Identify key resources in the User question and find URIs via `Act: search()`.
+* Next, dereference key resources via `Act: deref()`.
+Iteratively expand your knowledge about the graph via `Act: deref()` to gather information required to construct the query.
+Consider obtaining information about classes and properties via `Act: deref()`, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.
+* Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.
+
+Critical Instructions
+
+* Ensure that all URIs used in the query exist in the knowledge graph.
+* Only use URIs that have been previously mentioned or discovered via `search()` or `deref()`.
+* Never repeat successfully executed actions, the results will be the same.
+
+***
+
+System has access to ['..\\knowledge-graph\\velektronik-graph-clean\\abox-en.ttl.gz', '..\\knowledge-graph\\velektronik-graph-clean\\tbox.ttl'] with 32290 triples. System version v0.2.8-77-g05f9f338 is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.
+
+***
+
+IDMs
+
+***
+
+Think: The user has provided the term "IDMs", which could refer to various concepts. To better understand the context and formulate a query, I need to gather more information about the term. It's possible that "IDMs" is an abbreviation or acronym, and I should search for related keywords to identify the relevant resources.
+
+Act: search('IDM') | search('IDMs') | search('Intelligent Design Manufacturing') | search('Intrusion Detection Mechanism') | search('Intermediate Data Model')
+
+***
+
+The keyword search for `IDM` returned the following ranked list with hits.
+
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ58.ttl#this **IBM** 0.5164
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1221.ttl#this **Idaho** 0.4364
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ3012.ttl#this **Ulm** 0.2582
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1035.ttl#this **IQE** 0.2582
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ259.ttl#this **arm** 0.2582
+
+***
+
+The keyword search for `IDMs` returned the following ranked list with hits.
+
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ78.ttl#this **IXYS** 0.4082
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1221.ttl#this **Idaho** 0.3780
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ707.ttl#this **IC Plus** 0.3333
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ129.ttl#this **iC-Haus** 0.3333
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ802.ttl#this **ISE Labs** 0.3162
+
+***
+
+The keyword search for `Intelligent Design Manufacturing` returned the following ranked list with hits.
+
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ69.ttl#this **Murata Manufacturing** 0.5119
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ149.ttl#this **Shindengen Electric Manufacturing** 0.4348
+    https://welektronik.iis.fraunhofer.de/entity/Q285 **Integrated Device Manufacturer** 0.4244
+    https://welektronik.iis.fraunhofer.de/entity/Q1023 **Equipment manufacturer** 0.3851
+    https://welektronik.iis.fraunhofer.de/entity/Q288 **Design** 0.3638
+
+***
+
+The keyword search for `Intrusion Detection Mechanism` returned the following ranked list with hits.
+
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ705.ttl#this **Silicon Motion** 0.3282
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ257.ttl#this **Integrated Silicon Solution** 0.3127
+    https://www.w3.org/ns/org#Organization **Organization** 0.2791
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ260.ttl#this **Imagination Technologies** 0.2731
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ800.ttl#this **International Test Solutions** 0.2687
+
+***
+
+The keyword search for `Intermediate Data Model` returned the following ranked list with hits.
+
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ22.ttl#this **Intel** 0.4536
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ60.ttl#this **Intersil** 0.3795
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ858423.ttl#this **Date** 0.3266
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ167.ttl#this **Integral** 0.3162
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ39.ttl#this **MediaTek** 0.3162
+
+***
+
+Think: Based on the search results, it appears that "IDMs" could refer to "Integrated Device Manufacturers". To further understand the context and formulate a query, I should gather more information about the concept of Integrated Device Manufacturers.
+
+Act: deref('https://welektronik.iis.fraunhofer.de/entity/Q285')
+
+***
+
+The description of `https://welektronik.iis.fraunhofer.de/entity/Q285` is as follows.
+
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> .
+    
+    <https://welektronik.iis.fraunhofer.de/entity/Q285> a tbox:OrganizationType ;
+        rdfs:label "Integrated Device Manufacturer"@en .
+
+***
+
+Think: Based on the description of "Integrated Device Manufacturer", it appears that this concept refers to a type of organization. To further understand the context and formulate a query, I should gather more information about the properties and relationships associated with this concept.
+
+Act: query('PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?p ?o WHERE { <https://welektronik.iis.fraunhofer.de/entity/Q285> ?p ?o . }')
+
+***
+
+The query 'PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?p ?o WHERE { <https://welektronik.iis.fraunhofer.de/entity/Q285> ?p ?o . }' returned the following solution.
+
+    p,o
+    http://www.w3.org/1999/02/22-rdf-syntax-ns#type,https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#OrganizationType
+    http://www.w3.org/2000/01/rdf-schema#label,Integrated Device Manufacturer
+
+***
+
+Think: Based on the query results, it appears that the concept of "Integrated Device Manufacturer" is associated with the type "OrganizationType" and has a label "Integrated Device Manufacturer". To further understand the context and formulate a query, I should gather more information about the instances of this concept.
+
+Act: query('PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?s WHERE { ?s a tbox:OrganizationType ; rdfs:label "Integrated Device Manufacturer"@en . }')
+
+***
+
+The query 'PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?s WHERE { ?s a tbox:OrganizationType ; rdfs:label "Integrated Device Manufacturer"@en . }' returned the following solution.
+
+    s
+    https://welektronik.iis.fraunhofer.de/entity/Q285
+
+***
+
+Think: Based on the query results, it appears that there is one instance of the concept "Integrated Device Manufacturer", which is https://welektronik.iis.fraunhofer.de/entity/Q285. To further understand the context and formulate a query, I should gather more information about the properties and relationships associated with this instance.
+
+Act: deref('https://welektronik.iis.fraunhofer.de/entity/Q285') | query('PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?p ?o WHERE { <https://welektronik.iis.fraunhofer.de/entity/Q285> ?p ?o . }')
+
+***
+
+Do not repeat actions.
+
+***
+
+Do not repeat actions.
+
+***
+
+Think: Based on the information gathered, it appears that the concept of "IDMs" refers to "Integrated Device Manufacturers", which is a type of organization. The instance of this concept is https://welektronik.iis.fraunhofer.de/entity/Q285. To formulate a query, I should use the properties and relationships associated with this instance.
+
+Act: success('The query is about Integrated Device Manufacturers.')
+
+{'loop': {'id': '67bf2234', 'question': 'IDMs', 'iterations': 6, 'state': <State.SUCCESS: 'SUCCESS'>, 'sparql': 'PREFIX tbox: <https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?s WHERE { ?s a tbox:OrganizationType ; rdfs:label "Integrated Device Manufacturer"@en . }', 'elapsed_time': 61579}, 'tokens': {'prompt_tokens': 14109, 'completion_tokens': 750, 'elapsed_time_model': 43840, 'tokens_per_sec': 338.9351753952991}, 'git': {'label': 'v0.2.8-77-g05f9f338', 'commit': '05f9f33880e9523b7eb3f19ed97e6b71bef1547a'}, 'sources': ['..\\knowledge-graph\\velektronik-graph-clean\\abox-en.ttl.gz', '..\\knowledge-graph\\velektronik-graph-clean\\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}

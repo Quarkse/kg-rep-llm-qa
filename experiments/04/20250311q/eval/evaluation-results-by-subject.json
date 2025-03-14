@@ -1,0 +1,346 @@
+{
+  "metadata": {
+    "commit_id": "5e507554e7591bf3e1500b8f32ab0205253aa1ca",
+    "git_label": "v0.2.8-91-g5e507554",
+    "model": "llama-3.3-70b-instruct",
+    "knowledge_graph_files": "..\\knowledge-graph\\velektronik-graph-clean\\abox-en.ttl.gz ..\\knowledge-graph\\velektronik-graph-clean\\tbox.ttl"
+  },
+  "subjects": {
+    "two triple patterns": {
+      "dataset_metrics": {
+        "total_queries": 14,
+        "evaluated_queries": 14,
+        "success_count": 12,
+        "failure_count": 2
+      },
+      "performance_metrics": {
+        "em": 0.2857142857142857,
+        "f1": 0.3741496598639456,
+        "recall": 0.39285714285714285,
+        "precision": 0.38571428571428573,
+        "success_only": {
+          "em": 0.3333333333333333,
+          "f1": 0.4365079365079365,
+          "recall": 0.4583333333333333,
+          "precision": 0.45,
+          "count": 12
+        },
+        "failure_only": {
+          "em": 0.0,
+          "f1": 0.0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "count": 2
+        }
+      },
+      "query_metrics": {
+        "unparsable_sparql_queries": 0,
+        "unavailable_sparql_queries": 0
+      },
+      "state_metrics": {
+        "success": 12,
+        "fail": 2,
+        "init": 0,
+        "error_api": 0,
+        "unknown": 0,
+        "success_rate": 0.8571428571428571,
+        "failure_rate": 0.14285714285714285
+      },
+      "resource_metrics": {
+        "avg_tokens_in": 34843.857142857145,
+        "avg_tokens_out": 814.4285714285714,
+        "avg_elapsed_time": 90526.92857142857,
+        "avg_iteration": 5.642857142857143,
+        "count": 14
+      }
+    },
+    "one triple pattern": {
+      "dataset_metrics": {
+        "total_queries": 14,
+        "evaluated_queries": 14,
+        "success_count": 14,
+        "failure_count": 0
+      },
+      "performance_metrics": {
+        "em": 0.7142857142857143,
+        "f1": 0.748409174990751,
+        "recall": 0.8571428571428571,
+        "precision": 0.7364532019704433,
+        "success_only": {
+          "em": 0.7142857142857143,
+          "f1": 0.748409174990751,
+          "recall": 0.8571428571428571,
+          "precision": 0.7364532019704433,
+          "count": 14
+        },
+        "failure_only": {
+          "em": 0,
+          "f1": 0,
+          "recall": 0,
+          "precision": 0,
+          "count": 0
+        }
+      },
+      "query_metrics": {
+        "unparsable_sparql_queries": 0,
+        "unavailable_sparql_queries": 0
+      },
+      "state_metrics": {
+        "success": 14,
+        "fail": 0,
+        "init": 0,
+        "error_api": 0,
+        "unknown": 0,
+        "success_rate": 1.0,
+        "failure_rate": 0.0
+      },
+      "resource_metrics": {
+        "avg_tokens_in": 23884.35714285714,
+        "avg_tokens_out": 568.1428571428571,
+        "avg_elapsed_time": 63403.78571428572,
+        "avg_iteration": 4.642857142857143,
+        "count": 14
+      }
+    },
+    "four triple patterns": {
+      "dataset_metrics": {
+        "total_queries": 7,
+        "evaluated_queries": 7,
+        "success_count": 3,
+        "failure_count": 3
+      },
+      "performance_metrics": {
+        "em": 0.0,
+        "f1": 0.0019305019305019303,
+        "recall": 0.14285714285714285,
+        "precision": 0.0009718172983479105,
+        "success_only": {
+          "em": 0.0,
+          "f1": 0.0045045045045045045,
+          "recall": 0.3333333333333333,
+          "precision": 0.0022675736961451248,
+          "count": 3
+        },
+        "failure_only": {
+          "em": 0.0,
+          "f1": 0.0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "count": 3
+        }
+      },
+      "query_metrics": {
+        "unparsable_sparql_queries": 1,
+        "unavailable_sparql_queries": 0
+      },
+      "state_metrics": {
+        "success": 4,
+        "fail": 3,
+        "init": 0,
+        "error_api": 0,
+        "unknown": 0,
+        "success_rate": 0.5714285714285714,
+        "failure_rate": 0.42857142857142855
+      },
+      "resource_metrics": {
+        "avg_tokens_in": 47369.5,
+        "avg_tokens_out": 952.0,
+        "avg_elapsed_time": 96596.5,
+        "avg_iteration": 6.166666666666667,
+        "count": 6
+      }
+    },
+    "keyfigure": {
+      "dataset_metrics": {
+        "total_queries": 15,
+        "evaluated_queries": 15,
+        "success_count": 3,
+        "failure_count": 11
+      },
+      "performance_metrics": {
+        "em": 0.0,
+        "f1": 0.0,
+        "recall": 0.0,
+        "precision": 0.0,
+        "success_only": {
+          "em": 0.0,
+          "f1": 0.0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "count": 3
+        },
+        "failure_only": {
+          "em": 0.0,
+          "f1": 0.0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "count": 11
+        }
+      },
+      "query_metrics": {
+        "unparsable_sparql_queries": 1,
+        "unavailable_sparql_queries": 0
+      },
+      "state_metrics": {
+        "success": 4,
+        "fail": 11,
+        "init": 0,
+        "error_api": 0,
+        "unknown": 0,
+        "success_rate": 0.26666666666666666,
+        "failure_rate": 0.7333333333333333
+      },
+      "resource_metrics": {
+        "avg_tokens_in": 56056.0,
+        "avg_tokens_out": 1163.357142857143,
+        "avg_elapsed_time": 133736.5,
+        "avg_iteration": 6.714285714285714,
+        "count": 14
+      }
+    },
+    "three triple patterns": {
+      "dataset_metrics": {
+        "total_queries": 23,
+        "evaluated_queries": 23,
+        "success_count": 5,
+        "failure_count": 18
+      },
+      "performance_metrics": {
+        "em": 0.043478260869565216,
+        "f1": 0.05827147401908802,
+        "recall": 0.09178743961352658,
+        "precision": 0.0902352102637206,
+        "success_only": {
+          "em": 0.2,
+          "f1": 0.24,
+          "recall": 0.22222222222222224,
+          "precision": 0.4,
+          "count": 5
+        },
+        "failure_only": {
+          "em": 0.0,
+          "f1": 0.0077913279132791335,
+          "recall": 0.05555555555555555,
+          "precision": 0.004189435336976321,
+          "count": 18
+        }
+      },
+      "query_metrics": {
+        "unparsable_sparql_queries": 0,
+        "unavailable_sparql_queries": 0
+      },
+      "state_metrics": {
+        "success": 5,
+        "fail": 18,
+        "init": 0,
+        "error_api": 0,
+        "unknown": 0,
+        "success_rate": 0.21739130434782608,
+        "failure_rate": 0.782608695652174
+      },
+      "resource_metrics": {
+        "avg_tokens_in": 52810.217391304344,
+        "avg_tokens_out": 1053.2173913043478,
+        "avg_elapsed_time": 114899.0,
+        "avg_iteration": 6.3478260869565215,
+        "count": 23
+      }
+    },
+    "geo": {
+      "dataset_metrics": {
+        "total_queries": 14,
+        "evaluated_queries": 14,
+        "success_count": 9,
+        "failure_count": 5
+      },
+      "performance_metrics": {
+        "em": 0.21428571428571427,
+        "f1": 0.2719221835075493,
+        "recall": 0.32142857142857145,
+        "precision": 0.2911007025761124,
+        "success_only": {
+          "em": 0.3333333333333333,
+          "f1": 0.4074074074074074,
+          "recall": 0.3888888888888889,
+          "precision": 0.4444444444444444,
+          "count": 9
+        },
+        "failure_only": {
+          "em": 0.0,
+          "f1": 0.028048780487804882,
+          "recall": 0.2,
+          "precision": 0.015081967213114755,
+          "count": 5
+        }
+      },
+      "query_metrics": {
+        "unparsable_sparql_queries": 0,
+        "unavailable_sparql_queries": 0
+      },
+      "state_metrics": {
+        "success": 9,
+        "fail": 5,
+        "init": 0,
+        "error_api": 0,
+        "unknown": 0,
+        "success_rate": 0.6428571428571429,
+        "failure_rate": 0.35714285714285715
+      },
+      "resource_metrics": {
+        "avg_tokens_in": 44003.28571428572,
+        "avg_tokens_out": 921.7142857142857,
+        "avg_elapsed_time": 99409.28571428571,
+        "avg_iteration": 6.214285714285714,
+        "count": 14
+      }
+    },
+    "supply": {
+      "dataset_metrics": {
+        "total_queries": 11,
+        "evaluated_queries": 11,
+        "success_count": 5,
+        "failure_count": 6
+      },
+      "performance_metrics": {
+        "em": 0.0,
+        "f1": 0.0012285012285012285,
+        "recall": 0.09090909090909091,
+        "precision": 0.0006184291898577612,
+        "success_only": {
+          "em": 0.0,
+          "f1": 0.0027027027027027024,
+          "recall": 0.2,
+          "precision": 0.0013605442176870747,
+          "count": 5
+        },
+        "failure_only": {
+          "em": 0.0,
+          "f1": 0.0,
+          "recall": 0.0,
+          "precision": 0.0,
+          "count": 6
+        }
+      },
+      "query_metrics": {
+        "unparsable_sparql_queries": 0,
+        "unavailable_sparql_queries": 0
+      },
+      "state_metrics": {
+        "success": 5,
+        "fail": 6,
+        "init": 0,
+        "error_api": 0,
+        "unknown": 0,
+        "success_rate": 0.45454545454545453,
+        "failure_rate": 0.5454545454545454
+      },
+      "resource_metrics": {
+        "avg_tokens_in": 53143.36363636364,
+        "avg_tokens_out": 992.0,
+        "avg_elapsed_time": 102746.54545454546,
+        "avg_iteration": 6.181818181818182,
+        "count": 11
+      }
+    }
+  }
+}

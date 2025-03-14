@@ -1,0 +1,136 @@
+<p>Task</p>
+<p>You are Graf von Data, an assistant designed to formulate a query based on input from User.</p>
+<p>Process</p>
+<p>You interact with a knowledge graph in a strict think-act-observe cycle.</p>
+<ol>
+<li>Think: Analyse the question from User and the descriptions in the representations gathered so far.</li>
+<li>Act: Choose available actions (listed below) that will best progress towards formulating the query.</li>
+<li>Observe: HALT. System will provide the result of your chosen actions in the next cycle.</li>
+</ol>
+<p>In your response, start with a <code>Think:</code> section followed by an <code>Act:</code> section.</p>
+<p>Actions</p>
+<p>You can issue one or multiple of the following actions.</p>
+<ul>
+<li><code>search(keywords: string)</code>: Get URIs to resources matching the given <code>keywords</code>. Look for URIs that identify entities, i.e., make two calls: <code>search('foo')</code> and <code>search('bar')</code> instead of <code>search('foo bar')</code>.</li>
+<li><code>deref(resource URI: string)</code>: Get all triples with <code>resource URI</code> in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with <code>deref()</code>.</li>
+<li><code>query(sparql: string)</code>: Evaluate <code>sparql</code> and get solutions. Consider using path expressions, i.e., <code>*</code> or <code>+</code> for paths of transitive properties and <code>|</code> for alternative paths.</li>
+</ul>
+<p>You issue run actions concurrently using <code>|</code>, e.g., <code>search('foo') | search('bar')</code>.
+Format action calls as follows: <code>Act: describe('http://foo/bar')</code> or <code>Act: query('PREFIX : &lt;#&gt; SELECT DISTINCT ?x WHERE { ... }')</code>.
+Use quotes for arguments.</p>
+<p>Chat</p>
+<p>Sometimes User does not seek factual information.</p>
+<ul>
+<li><code>chat(text: string)</code>: Issue a <code>chat()</code> action if User does not seek factual information from the knowledge graph.</li>
+</ul>
+<p>Conditions</p>
+<p>Once you have come up with the final query, check the query via <code>query()</code> and then end.</p>
+<ul>
+<li><code>success(text: string)</code>: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.</li>
+</ul>
+<p>If nearing about ten cycles:</p>
+<ul>
+<li><code>fail(text: string)</code>: You have no other choice than to give up. Optionally report to User the relevant steps you tried.</li>
+</ul>
+<p>Stages</p>
+<ul>
+<li>Identify key resources in the User question and find URIs via <code>Act: search()</code>.</li>
+<li>Next, dereference key resources via <code>Act: deref()</code>.
+Iteratively expand your knowledge about the graph via <code>Act: deref()</code> to gather information required to construct the query.
+Consider obtaining information about classes and properties via <code>Act: deref()</code>, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.</li>
+<li>Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.</li>
+</ul>
+<p>Critical Instructions</p>
+<ul>
+<li>Ensure that all URIs used in the query exist in the knowledge graph.</li>
+<li>Only use URIs that have been previously mentioned or discovered via <code>search()</code> or <code>deref()</code>.</li>
+<li>Never repeat successfully executed actions, the results will be the same.</li>
+</ul>
+<hr />
+<p>System has access to ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'] with 37057 triples. System version v0.2.8-91-g5e507554 is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.</p>
+<hr />
+<p>Publications of Pat Gelsinger in 2005</p>
+<hr />
+<p>Think: The user is asking for publications by Pat Gelsinger in the year 2005. To formulate a query, we need to identify the key resources involved, which are Pat Gelsinger and the year 2005. We also need to find the relevant properties and classes that connect these resources to publications.</p>
+<p>Act: search('Pat Gelsinger') | search('publication') | search('2005')</p>
+<hr />
+<p>The keyword search for <code>Pat Gelsinger</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ61843.ttl#this **Gerlingen** 0.3114
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/person/wdQ7143480.ttl#journals-dt-WagnerG05 **Driving the $5 Billion Innovation Engine at Intel: An Interview with Patrick P. Gelsinger, Digital Enterprise Group Senior Vice President and General Manager, Intel.** 0.2410
+https://welektronik.iis.fraunhofer.de/entity/Q290 **Packaging** 0.2335
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ42153.ttl#this **Paju** 0.2108
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ152406.ttl#this **Kiryat Gat** 0.2070
+</code></pre>
+<hr />
+<p>The keyword search for <code>publication</code> returned the following ranked list with hits.</p>
+<pre><code>https://dblp.org/rdf/schema#Publication **Publication** 1.0000
+https://dblp.org/rdf/schema#Creator **Publication** 1.0000
+https://dblp.org/rdf/schema#yearOfPublication **year of publication** 0.7263
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ705.ttl#this **Silicon Motion** 0.3922
+http://purl.org/linked-data/cube#Observation **Observation** 0.3846
+</code></pre>
+<hr />
+<p>The keyword search for <code>2005</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1725421.ttl#this **canton of Grenoble-5** 0.1508
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/person/wdQ7143480.ttl#conf-hotchips-Gelsinger22 **Semiconductors Run the World : Hot Chips 2022.** 0.1021
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1204.ttl#this **Hoshine Silicon Industry Xinjiang Fab** 0.0000
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/person/wdQ84747997.ttl#journals-jolpe-AcarDN05 **Leakage and Leakage Sensitivity Computation for Combinational Circuits.** 0.0000
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1004241.ttl#this **Essex** 0.0000
+</code></pre>
+<hr />
+<p>Think: We have found some relevant resources, including Pat Gelsinger, publication, and 2005. However, the search results for 2005 do not seem to be directly related to Pat Gelsinger or publications. We need to further explore the connections between these resources.</p>
+<p>Act: deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/person/wdQ7143480.ttl#journals-dt-WagnerG05') | deref('https://dblp.org/rdf/schema#Publication') | deref('https://dblp.org/rdf/schema#yearOfPublication')</p>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/person/wdQ7143480.ttl#journals-dt-WagnerG05</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;https://dblp.org/rdf/schema#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/person/wdQ7143480.ttl#journals-dt-WagnerG05&gt; a ns1:Publication ;
+    rdfs:label "Driving the $5 Billion Innovation Engine at Intel: An Interview with Patrick P. Gelsinger, Digital Enterprise Group Senior Vice President and General Manager, Intel." ;
+    owl:sameAs &lt;https://dblp.org/rec/journals/dt/WagnerG05&gt; ;
+    ns1:title "Driving the $5 Billion Innovation Engine at Intel: An Interview with Patrick P. Gelsinger, Digital Enterprise Group Senior Vice President and General Manager, Intel." ;
+    ns1:yearOfPublication "2005"^^xsd:gYear .
+</code></pre>
+<hr />
+<p>The description of <code>https://dblp.org/rdf/schema#Publication</code> is as follows.</p>
+<pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+
+&lt;https://dblp.org/rdf/schema#Publication&gt; a rdfs:Class ;
+    rdfs:label "Publication"@en .
+</code></pre>
+<hr />
+<p>The description of <code>https://dblp.org/rdf/schema#yearOfPublication</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;https://dblp.org/rdf/schema#yearOfPublication&gt; a owl:DatatypeProperty ;
+    rdfs:label "year of publication"@en ;
+    rdfs:domain &lt;https://dblp.org/rdf/schema#Publication&gt; ;
+    rdfs:range xsd:gYear .
+</code></pre>
+<hr />
+<p>Think: We have found some relevant information about Pat Gelsinger's publications, including a publication in 2005. We can now use this information to construct a query to find all publications by Pat Gelsinger in 2005.</p>
+<p>Act: query('PREFIX ns1: <a href="https://dblp.org/rdf/schema#">https://dblp.org/rdf/schema#</a> PREFIX xsd: <a href="http://www.w3.org/2001/XMLSchema#">http://www.w3.org/2001/XMLSchema#</a> SELECT DISTINCT ?publication WHERE { ?publication a ns1:Publication ; ns1:author "Pat Gelsinger" ; ns1:yearOfPublication "2005"^^xsd:gYear }')</p>
+<hr />
+<p>No results for <code>query('PREFIX ns1: &lt;https://dblp.org/rdf/schema#&gt; PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; SELECT DISTINCT ?publication WHERE { ?publication a ns1:Publication ; ns1:author "Pat Gelsinger" ; ns1:yearOfPublication "2005"^^xsd:gYear }')</code>.</p>
+<hr />
+<p>Think: The query did not return any results. This is likely because the query is too specific and does not match any publications in the database. We need to modify the query to make it more general and flexible.</p>
+<p>Act: query('PREFIX ns1: <a href="https://dblp.org/rdf/schema#">https://dblp.org/rdf/schema#</a> PREFIX xsd: <a href="http://www.w3.org/2001/XMLSchema#">http://www.w3.org/2001/XMLSchema#</a> SELECT DISTINCT ?publication WHERE { ?publication a ns1:Publication ; ns1:yearOfPublication "2005"^^xsd:gYear ; ns1:author ?author . FILTER regex(str(?author), "Gelsinger") }')</p>
+<hr />
+<p>No results for <code>query('PREFIX ns1: &lt;https://dblp.org/rdf/schema#&gt; PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; SELECT DISTINCT ?publication WHERE { ?publication a ns1:Publication ; ns1:yearOfPublication "2005"^^xsd:gYear ; ns1:author ?author . FILTER regex(str(?author), "Gelsinger") }')</code>.</p>
+<hr />
+<p>Think: The query still did not return any results. We need to further modify the query to make it more flexible and general.</p>
+<p>Act: query('PREFIX ns1: <a href="https://dblp.org/rdf/schema#">https://dblp.org/rdf/schema#</a> PREFIX xsd: <a href="http://www.w3.org/2001/XMLSchema#">http://www.w3.org/2001/XMLSchema#</a> SELECT DISTINCT ?publication ?author WHERE { ?publication a ns1:Publication ; ns1:yearOfPublication ?year ; ns1:author ?author . FILTER (?year = "2005"^^xsd:gYear) }') | query('PREFIX ns1: <a href="https://dblp.org/rdf/schema#">https://dblp.org/rdf/schema#</a> PREFIX xsd: <a href="http://www.w3.org/2001/XMLSchema#">http://www.w3.org/2001/XMLSchema#</a> SELECT DISTINCT ?publication ?author WHERE { ?publication a ns1:Publication ; ns1:author ?author . FILTER regex(str(?author), "Gelsinger") }')</p>
+<hr />
+<p>No results for <code>query('PREFIX ns1: &lt;https://dblp.org/rdf/schema#&gt; PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; SELECT DISTINCT ?publication ?author WHERE { ?publication a ns1:Publication ; ns1:yearOfPublication ?year ; ns1:author ?author . FILTER (?year = "2005"^^xsd:gYear) }')</code>.</p>
+<hr />
+<p>No results for <code>query('PREFIX ns1: &lt;https://dblp.org/rdf/schema#&gt; PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; SELECT DISTINCT ?publication ?author WHERE { ?publication a ns1:Publication ; ns1:author ?author . FILTER regex(str(?author), "Gelsinger") }')</code>.</p>
+<hr />
+<p>Think: The queries still did not return any results. We have tried various approaches to find publications by Pat Gelsinger in 2005, but none of them have been successful. At this point, we have to give up.</p>
+<p>Act: fail('Unable to find publications by Pat Gelsinger in 2005.')</p>
+<p>{'loop': {'id': '67d17424', 'question': 'Publications of Pat Gelsinger in 2005', 'iterations': 6, 'state': <State.FAIL: 'FAIL'>, 'sparql': 'PREFIX ns1: <a href="https://dblp.org/rdf/schema#">https://dblp.org/rdf/schema#</a> PREFIX xsd: <a href="http://www.w3.org/2001/XMLSchema#">http://www.w3.org/2001/XMLSchema#</a> SELECT DISTINCT ?publication ?author WHERE { ?publication a ns1:Publication ; ns1:author ?author . FILTER regex(str(?author), "Gelsinger") }', 'elapsed_time': 54906}, 'tokens': {'prompt_tokens': 13374, 'completion_tokens': 729, 'elapsed_time_model': 45215, 'tokens_per_sec': 311.9082650921544}, 'git': {'label': 'v0.2.8-91-g5e507554', 'commit': '5e507554e7591bf3e1500b8f32ab0205253aa1ca'}, 'sources': ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}</p>

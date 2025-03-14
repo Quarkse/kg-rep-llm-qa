@@ -1,0 +1,275 @@
+<p>Task</p>
+<p>You are Graf von Data, an assistant designed to formulate a query based on input from User.</p>
+<p>Process</p>
+<p>You interact with a knowledge graph in a strict think-act-observe cycle.</p>
+<ol>
+<li>Think: Analyse the question from User and the descriptions in the representations gathered so far.</li>
+<li>Act: Choose available actions (listed below) that will best progress towards formulating the query.</li>
+<li>Observe: HALT. System will provide the result of your chosen actions in the next cycle.</li>
+</ol>
+<p>In your response, start with a <code>Think:</code> section followed by an <code>Act:</code> section.</p>
+<p>Actions</p>
+<p>You can issue one or multiple of the following actions.</p>
+<ul>
+<li><code>search(keywords: string)</code>: Get URIs to resources matching the given <code>keywords</code>. Look for URIs that identify entities, i.e., make two calls: <code>search('foo')</code> and <code>search('bar')</code> instead of <code>search('foo bar')</code>.</li>
+<li><code>deref(resource URI: string)</code>: Get all triples with <code>resource URI</code> in subject position. Expand (https://www.w3.org/TR/curie)[Compact URIs] to absolute URIs for use with <code>deref()</code>.</li>
+<li><code>query(sparql: string)</code>: Evaluate <code>sparql</code> and get solutions. Consider using path expressions, i.e., <code>*</code> or <code>+</code> for paths of transitive properties and <code>|</code> for alternative paths.</li>
+</ul>
+<p>You issue run actions concurrently using <code>|</code>, e.g., <code>search('foo') | search('bar')</code>.
+Format action calls as follows: <code>Act: describe('http://foo/bar')</code> or <code>Act: query('PREFIX : &lt;#&gt; SELECT DISTINCT ?x WHERE { ... }')</code>.
+Use quotes for arguments.</p>
+<p>Chat</p>
+<p>Sometimes User does not seek factual information.</p>
+<ul>
+<li><code>chat(text: string)</code>: Issue a <code>chat()</code> action if User does not seek factual information from the knowledge graph.</li>
+</ul>
+<p>Conditions</p>
+<p>Once you have come up with the final query, check the query via <code>query()</code> and then end.</p>
+<ul>
+<li><code>success(text: string)</code>: Confirm the query as final and optionally give User a concise message explaining the relevant steps you took. Do not mention the query or the query solutions.</li>
+</ul>
+<p>If nearing about ten cycles:</p>
+<ul>
+<li><code>fail(text: string)</code>: You have no other choice than to give up. Optionally report to User the relevant steps you tried.</li>
+</ul>
+<p>Stages</p>
+<ul>
+<li>Identify key resources in the User question and find URIs via <code>Act: search()</code>.</li>
+<li>Next, dereference key resources via <code>Act: deref()</code>.
+Iteratively expand your knowledge about the graph via <code>Act: deref()</code> to gather information required to construct the query.
+Consider obtaining information about classes and properties via <code>Act: deref()</code>, especially domain and range of properties.
+Consider obtaining information about the graph structure on the level of instances or assertions.</li>
+<li>Once you have collected the information requried to write the query, make sure to include in the query definite descriptions of the key resources.
+Then, expand the query iteratively with more triple patterns.</li>
+</ul>
+<p>Critical Instructions</p>
+<ul>
+<li>Ensure that all URIs used in the query exist in the knowledge graph.</li>
+<li>Only use URIs that have been previously mentioned or discovered via <code>search()</code> or <code>deref()</code>.</li>
+<li>Never repeat successfully executed actions, the results will be the same.</li>
+</ul>
+<hr />
+<p>System has access to ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'] with 48029 triples. System version v0.2.8-90-ga084b38e is using llama-3.3-70b-instruct at chat-ai.academiccloud.de.</p>
+<hr />
+<p>Employee count of companies with assembly/test sites</p>
+<hr />
+<p>Think: The User is asking for the employee count of companies that have assembly or test sites. This implies that we need to find companies that have such sites and then retrieve their employee counts. We should start by searching for relevant keywords to identify key resources in the knowledge graph.</p>
+<p>Act: search('company') | search('assembly site') | search('test site') | search('employee count')</p>
+<hr />
+<p>The keyword search for <code>company</code> returned the following ranked list with hits.</p>
+<pre><code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this **Active Business Company** 0.5333
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ109204.ttl#this **Comal County** 0.4167
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ20.ttl#this **Taiwan Semiconductor Manufacturing Company** 0.4020
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ108418.ttl#this **Cook County** 0.3443
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ486078.ttl#this **Canyon County** 0.3443
+</code></pre>
+<hr />
+<p>The keyword search for <code>assembly site</code> returned the following ranked list with hits.</p>
+<pre><code>https://www.w3.org/ns/org#Site **Site** 0.5270
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ423.ttl#this **Maxim Assembly/Test Cavite** 0.4880
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1019.ttl#this **AEM Assembly/Test Singapore** 0.4795
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ998.ttl#this **Ardentec Assembly/Test Singapore** 0.4428
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ398.ttl#this **ams Osram Assembly/Test Singapore** 0.4364
+</code></pre>
+<hr />
+<p>The keyword search for <code>test site</code> returned the following ranked list with hits.</p>
+<pre><code>https://www.w3.org/ns/org#Site **Site** 0.6155
+https://www.w3.org/ns/org#hasSite **has site** 0.4767
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#siteType **site type** 0.4545
+https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#SiteType **Site type** 0.4545
+https://welektronik.iis.fraunhofer.de/entity/Q289 **Testing** 0.4020
+</code></pre>
+<hr />
+<p>The keyword search for <code>employee count</code> returned the following ranked list with hits.</p>
+<pre><code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#employees **employees** 0.6030
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ114843.ttl#this **Erie County** 0.4160
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ167565.ttl#this **Lenawee County** 0.3750
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ494254.ttl#this **Elk County** 0.3608
+https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ506215.ttl#this **Wake County** 0.3467
+</code></pre>
+<hr />
+<p>Think: We have identified key resources in the knowledge graph, including companies, assembly sites, test sites, and employee counts. Next, we should dereference these resources to gather more information and expand our knowledge about the graph.</p>
+<p>Act: deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this') | deref('https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ423.ttl#this') | deref('https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#employees') | deref('https://www.w3.org/ns/org#Site') | deref('https://www.w3.org/ns/org#hasSite')</p>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix ns2: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#headquarter&gt; tbox:registeredSiteOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q1060&gt; tbox:organizationTypeOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#this&gt; a owl:Thing,
+        &lt;https://paul.ti.rw.fau.de/~ju32haqi/supply-networks/abstraction-examples/esn-ontology#Enterprise&gt;,
+        ns1:Organization ;
+    rdfs:label "Active Business Company"@en ;
+    ns2:locatedIn &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ183.ttl#this&gt;,
+        &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ279128.ttl#this&gt; ;
+    owl:sameAs &lt;http://www.wikidata.org/entity/Q124743799&gt;,
+        &lt;https://welektronik.iis.fraunhofer.de/entity/Q1104&gt; ;
+    tbox:organizationType &lt;https://welektronik.iis.fraunhofer.de/entity/Q1060&gt; ;
+    ns1:hasRegisteredSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1104.ttl#headquarter&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ423.ttl#this</code> is as follows.</p>
+<pre><code>@prefix ns1: &lt;https://www.w3.org/ns/org#&gt; .
+@prefix ns2: &lt;http://www.geonames.org/ontology#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+ns2:S tbox:featureClassOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ423.ttl#this&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ61.ttl#this&gt; ns1:hasSite &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ423.ttl#this&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1482.ttl#this&gt; tbox:childFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ423.ttl#this&gt; .
+
+&lt;https://welektronik.iis.fraunhofer.de/entity/Q298&gt; tbox:siteTypeOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ423.ttl#this&gt; .
+
+&lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ423.ttl#this&gt; a ns2:Feature,
+        ns1:Site ;
+    rdfs:label "Maxim Assembly/Test Cavite"@en ;
+    ns2:featureClass ns2:S ;
+    ns2:parentCountry &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ928.ttl#this&gt; ;
+    ns2:parentFeature &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/region/wdQ1482.ttl#this&gt; ;
+    tbox:siteType &lt;https://welektronik.iis.fraunhofer.de/entity/Q298&gt; ;
+    ns1:siteOf &lt;https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ61.ttl#this&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#employees</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix qb: &lt;http://purl.org/linked-data/cube#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+tbox:employees a qb:MeasureProperty,
+        owl:DatatypeProperty ;
+    rdfs:label "employees"@en ;
+    rdfs:domain qb:Observation ;
+    rdfs:range xsd:decimal .
+</code></pre>
+<hr />
+<p>The description of <code>https://www.w3.org/ns/org#Site</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix tbox: &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; .
+
+&lt;http://www.geonames.org/ontology#Feature&gt; a rdfs:Class ;
+    rdfs:label "Feature"@en .
+
+tbox:SiteType a rdfs:Class ;
+    rdfs:label "Site type"@en .
+
+&lt;https://www.w3.org/ns/org#Organization&gt; a rdfs:Class ;
+    rdfs:label "Organization"@en .
+
+&lt;https://www.w3.org/ns/org#Site&gt; a rdfs:Class ;
+    rdfs:label "Site"@en ;
+    rdfs:subClassOf &lt;http://www.geonames.org/ontology#Feature&gt; .
+
+tbox:registeredSiteOf a owl:ObjectProperty ;
+    rdfs:label "registered site of"@en ;
+    rdfs:domain &lt;https://www.w3.org/ns/org#Site&gt; ;
+    rdfs:range &lt;https://www.w3.org/ns/org#Organization&gt; .
+
+tbox:siteType a owl:ObjectProperty ;
+    rdfs:label "site type"@en ;
+    rdfs:domain &lt;https://www.w3.org/ns/org#Site&gt; ;
+    rdfs:range tbox:SiteType .
+
+tbox:siteTypeOf a owl:ObjectProperty ;
+    rdfs:label "site type of"@en ;
+    rdfs:domain tbox:SiteType ;
+    rdfs:range &lt;https://www.w3.org/ns/org#Site&gt; .
+
+&lt;https://www.w3.org/ns/org#hasRegisteredSite&gt; a owl:ObjectProperty ;
+    rdfs:label "has registered site"@en ;
+    rdfs:domain &lt;https://www.w3.org/ns/org#Organization&gt; ;
+    rdfs:range &lt;https://www.w3.org/ns/org#Site&gt; .
+
+&lt;https://www.w3.org/ns/org#hasSite&gt; a owl:ObjectProperty ;
+    rdfs:label "has site"@en ;
+    rdfs:domain &lt;https://www.w3.org/ns/org#Organization&gt; ;
+    rdfs:range &lt;https://www.w3.org/ns/org#Site&gt; .
+
+&lt;https://www.w3.org/ns/org#siteOf&gt; a owl:ObjectProperty ;
+    rdfs:label "site of"@en ;
+    rdfs:domain &lt;https://www.w3.org/ns/org#Site&gt; ;
+    rdfs:range &lt;https://www.w3.org/ns/org#Organization&gt; .
+</code></pre>
+<hr />
+<p>The description of <code>https://www.w3.org/ns/org#hasSite</code> is as follows.</p>
+<pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+
+&lt;https://www.w3.org/ns/org#Organization&gt; a rdfs:Class ;
+    rdfs:label "Organization"@en .
+
+&lt;https://www.w3.org/ns/org#Site&gt; a rdfs:Class ;
+    rdfs:label "Site"@en .
+
+&lt;https://www.w3.org/ns/org#hasRegisteredSite&gt; a owl:ObjectProperty ;
+    rdfs:label "has registered site"@en ;
+    rdfs:domain &lt;https://www.w3.org/ns/org#Organization&gt; ;
+    rdfs:range &lt;https://www.w3.org/ns/org#Site&gt; ;
+    rdfs:subPropertyOf &lt;https://www.w3.org/ns/org#hasSite&gt; .
+
+&lt;https://www.w3.org/ns/org#hasSite&gt; a owl:ObjectProperty ;
+    rdfs:label "has site"@en ;
+    rdfs:domain &lt;https://www.w3.org/ns/org#Organization&gt; ;
+    rdfs:range &lt;https://www.w3.org/ns/org#Site&gt; ;
+    owl:inverseOf &lt;https://www.w3.org/ns/org#siteOf&gt; .
+</code></pre>
+<hr />
+<p>Think: We have gathered more information about the key resources in the knowledge graph, including companies, assembly sites, test sites, and employee counts. We have also learned about the relationships between these resources, such as a company having a site or a site being of a certain type. Next, we should use this information to construct a query that retrieves the employee count of companies with assembly or test sites.</p>
+<p>Act: query('PREFIX : <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX org: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?company ?employeeCount WHERE { ?company a org:Organization . ?company org:hasSite ?site . ?site a org:Site . ?site :siteType ?siteType . ?siteType :siteTypeOf ?site . ?company :employees ?employeeCount . FILTER (?siteType = :assembly || ?siteType = :test) }')</p>
+<hr />
+<p>No results for <code>query('PREFIX : &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; PREFIX org: &lt;https://www.w3.org/ns/org#&gt; SELECT DISTINCT ?company ?employeeCount WHERE { ?company a org:Organization . ?company org:hasSite ?site . ?site a org:Site . ?site :siteType ?siteType . ?siteType :siteTypeOf ?site . ?company :employees ?employeeCount . FILTER (?siteType = :assembly || ?siteType = :test) }')</code>.</p>
+<hr />
+<p>Think: The query did not return any results, which means that the query is not correctly formulated or the data is not available in the knowledge graph. We should re-examine the query and the data to identify the issue.</p>
+<p>Act: query('PREFIX : <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX org: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?company ?employeeCount WHERE { ?company a org:Organization . ?company org:hasSite ?site . ?site a org:Site . ?site :siteType ?siteType . ?company :employees ?employeeCount . FILTER (?siteType = <a href="https://welektronik.iis.fraunhofer.de/entity/Q298">https://welektronik.iis.fraunhofer.de/entity/Q298</a> || ?siteType = <a href="https://welektronik.iis.fraunhofer.de/entity/Q289">https://welektronik.iis.fraunhofer.de/entity/Q289</a>) }')</p>
+<hr />
+<p>No results for <code>query('PREFIX : &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; PREFIX org: &lt;https://www.w3.org/ns/org#&gt; SELECT DISTINCT ?company ?employeeCount WHERE { ?company a org:Organization . ?company org:hasSite ?site . ?site a org:Site . ?site :siteType ?siteType . ?company :employees ?employeeCount . FILTER (?siteType = &lt;https://welektronik.iis.fraunhofer.de/entity/Q298&gt; || ?siteType = &lt;https://welektronik.iis.fraunhofer.de/entity/Q289&gt;) }')</code>.</p>
+<hr />
+<p>Think: The query still did not return any results. We should try to simplify the query and check if the data is available in the knowledge graph.</p>
+<p>Act: query('PREFIX : <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX org: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?company ?site WHERE { ?company a org:Organization . ?company org:hasSite ?site . ?site a org:Site . }')</p>
+<hr />
+<p>The query 'PREFIX : <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX org: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?company ?site WHERE { ?company a org:Organization . ?company org:hasSite ?site . ?site a org:Site . }' returned the following solution (first 20 results).
+    company,site
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1066.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1205.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1119.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1308.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1147.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1306.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1156.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1305.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1171.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1206.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1177.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1307.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ120.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ516.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ103.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ508.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1089.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1194.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ1089.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1195.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ125.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ517.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ75.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ464.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ792.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ793.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ905.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ975.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ923.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1009.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ925.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1012.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ927.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ1017.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ93.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ489.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ93.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ490.ttl#this
+    https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/company/weQ100.ttl#this,https://solid.iis.fraunhofer.de/oe-40200/2024/10/velektronik-graph-clean/site/weQ506.ttl#this</p>
+<hr />
+<p>Think: The query returned a list of companies and their corresponding sites. However, the query did not return the employee count of these companies. We should modify the query to include the employee count.</p>
+<p>Act: query('PREFIX : <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX org: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?company ?site ?employeeCount WHERE { ?company a org:Organization . ?company org:hasSite ?site . ?site a org:Site . ?company :employees ?employeeCount . }')</p>
+<hr />
+<p>No results for <code>query('PREFIX : &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; PREFIX org: &lt;https://www.w3.org/ns/org#&gt; SELECT DISTINCT ?company ?site ?employeeCount WHERE { ?company a org:Organization . ?company org:hasSite ?site . ?site a org:Site . ?company :employees ?employeeCount . }')</code>.</p>
+<hr />
+<p>Think: The query still did not return any results. We should try to simplify the query and check if the data is available in the knowledge graph.</p>
+<p>Act: query('PREFIX : <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX org: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?company ?employeeCount WHERE { ?company a org:Organization . ?company :employees ?employeeCount . }')</p>
+<hr />
+<p>No results for <code>query('PREFIX : &lt;https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#&gt; PREFIX org: &lt;https://www.w3.org/ns/org#&gt; SELECT DISTINCT ?company ?employeeCount WHERE { ?company a org:Organization . ?company :employees ?employeeCount . }')</code>.</p>
+<hr />
+<p>Think: The query did not return any results, which means that the data is not available in the knowledge graph or the query is not correctly formulated. We should check the data and the query to identify the issue.</p>
+<p>Act: fail('Unable to retrieve employee count of companies with assembly or test sites. The query did not return any results.')</p>
+<p>{'loop': {'id': '67d02fa3', 'question': 'Employee count of companies with assembly/test sites', 'iterations': 8, 'state': <State.FAIL: 'FAIL'>, 'sparql': 'PREFIX : <a href="https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#">https://github.com/wintechis/natural-language-query-answering/tree/main/knowledge-graph/velektronik-graph-clean/tbox.ttl#</a> PREFIX org: <a href="https://www.w3.org/ns/org#">https://www.w3.org/ns/org#</a> SELECT DISTINCT ?company ?employeeCount WHERE { ?company a org:Organization . ?company :employees ?employeeCount . }', 'elapsed_time': 119262}, 'tokens': {'prompt_tokens': 39015, 'completion_tokens': 1131, 'elapsed_time_model': 75470, 'tokens_per_sec': 531.9456502007727}, 'git': {'label': 'v0.2.8-90-ga084b38e', 'commit': 'a084b38e1d7b67039f0d60b14814ef1241c00fd7'}, 'sources': ['..\knowledge-graph\velektronik-graph-clean\abox-en.ttl.gz', '..\knowledge-graph\velektronik-graph-clean\tbox.ttl'], 'client_info': {'model': 'llama-3.3-70b-instruct', 'max_tokens': 1024, 'temperature': 0, 'top_p': 1, 'baseuri': 'https://chat-ai.academiccloud.de/v1/'}, 'platform': {'node': 'r10389', 'platform': 'Windows-10-10.0.19045-SP0', 'system': 'Windows', 'processor': 'Intel64 Family 6 Model 142 Stepping 12, GenuineIntel', 'machine': 'AMD64', 'physical_memory': 15.342079162597656, 'python_version': '3.12.7'}}</p>
