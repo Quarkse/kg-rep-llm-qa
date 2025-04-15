@@ -1,0 +1,51 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+CONSTRUCT {
+    # classes in domain or range of the specified property, with type and label
+    <{uri}> ?p7 ?o7 .
+    ?o7 ?p8 ?o8 .
+
+    # subproperties, with type, label, domain, and range
+    ?subproperty rdfs:subPropertyOf <{uri}> .
+    ?subproperty ?p5 ?o5 .
+    # classes in domain or range of such properties, with type and label
+    ?o5 ?p6 ?o6 .
+
+    # parent properties, with type, label, domain, and range
+    <{uri}> rdfs:subPropertyOf ?parent_property .
+    ?parent_property ?p1 ?o1 .
+    # classes in domain or range of such properties, with type and label
+    ?o1 ?p3 ?o3 .
+}
+WHERE {
+    {
+        # classes in domain or range of the specified property, with type and label
+        <{uri}> ?p7 ?o7 .
+        FILTER (?p7 = rdfs:domain || ?p7 = rdfs:range)
+        OPTIONAL {
+            ?o7 ?p8 ?o8 .
+            FILTER (?p8 = rdf:type || ?p8 = rdfs:label)
+        }
+    } UNION {
+        # subproperties, with type, label, domain, and range
+        # classes in domain or range of such properties, with type and label
+        ?subproperty rdfs:subPropertyOf <{uri}> .
+        ?subproperty ?p5 ?o5 .
+        FILTER (?p5 = rdf:type || ?p5 = rdfs:domain || ?p5 = rdfs:range || ?p5 = rdfs:label)
+        OPTIONAL {
+            ?o5 ?p6 ?o6 .
+            FILTER (?p6 = rdf:type || ?p6 = rdfs:label)
+        }
+    } UNION {
+        # parent properties, with type, label, domain, and range
+        # classes in domain or range of such properties, with type and label
+        <{uri}> rdfs:subPropertyOf ?parent_property .
+        ?parent_property ?p1 ?o1 .
+        FILTER (?p1 = rdf:type || ?p1 = rdfs:domain || ?p1 = rdfs:range || ?p1 = rdfs:label)
+        OPTIONAL {
+            ?o1 ?p3 ?o3 .
+            FILTER (?p3 = rdf:type || ?p3 = rdfs:label)
+        }
+    }
+}
